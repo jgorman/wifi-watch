@@ -24,11 +24,9 @@ to be able to see how the shared bandwidth is holding up.
 wifi-watch will run with any ruby version. Clone the repository and copy wifi-watch into your path.
 
 ```
-git clone xxx
+git clone https://github.com/jgorman/wifi-watch.git
 sudo cp wifi-watch/wifi-watch /usr/local/bin
 ```
-
-Curl and wget work too.
 
 ### Sample Output
 
@@ -40,20 +38,12 @@ Time  Tot Run Status Packet loss       Speed
 17:03 136  67 good   1.5% packet loss  676.17 ms
 ```
 
-- Time : Current time.
-
-- Tot: Total pings so far in the current period.
-  This will count up to 300, 5 minutes per period.
-
-- Run: Run length for the current ping status.
-  In the example above there have been 67 good
-  pings in a row.
-
-- Status: Was the last ping a success or a failure?
-
-- Packet loss: Percent over the current period.
-
-- Speed: Ping round trip in milliseconds to ns.google.com.
+- Current time.
+- Pings so far in the current period.
+- 67 good pings in a row.
+- Status of the last ping: "good" or "fail".
+- Packet loss percent over the current period.
+- Speed of ping round trip to ns.google.com.
 
 Here is the past half hour of network quality history.
 
@@ -63,7 +53,7 @@ working at a coffee shop right now and perhaps someone
 is watching videos.
 
 ```
-Time  Tot Num Good   Packet loss       Speed
+Time  Tot Num Good   Packet loss       Avg Speed
 ----- --- --- ----   ----------------  ---------
 16:25 300 298 good   0.7% packet loss   73.35 ms
 16:30 300 298 good   0.7% packet loss   63.84 ms
@@ -76,12 +66,31 @@ Time  Tot Num Good   Packet loss       Speed
 17:03 136  67 good   1.5% packet loss  676.17 ms
 ```
 
-- Time: History lines show the end time for each period.
+- History lines show the end time for each period.
+- 300 pings over 5 minutes.
+- Count of good pings over the period.
+- Packet loss percentage over the entire period.
+- Average speed over the entire period.
 
-- Tot: Total will generally be 300 pings over 5 minutes.
+### Failure modes
 
-- Num Good: Count of good pings over the period.
+Here we have lost our internet connection for the last 39 seconds.
 
-- Packet loss: Percent loss over the entire period.
+```
+17:59 207  39 fail  19.3% packet loss   62.55 ms
+```
 
-- Speed: Average of ping times over the period.
+wifi-watch will pass error messages out from ping. Here we got our network connection back.
+
+```
+18:00 300 167 good  44.3% packet loss  107.41 ms
+18:00 ping: cannot resolve ns.google.com: Unknown host
+18:04 203 141 good   5.4% packet loss  218.35 ms
+```
+
+Sometimes a coffee shop wifi login will time out and you will
+need to login again. Here is what wifi-watch will show.
+
+```
+92 bytes from 10.128.128.128: Communication prohibited by filter
+```
