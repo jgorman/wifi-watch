@@ -40,17 +40,17 @@ Time  Tot Run Status Packet loss       Speed
 
 - Current time.
 - Pings so far in the current period.
-- 67 good pings in a row.
+- 67 good pings in a row!
 - Status of the last ping: "good" or "fail".
-- Packet loss percent over the current period.
-- Speed of ping round trip to ns.google.com.
+- Packet loss percentage over the current period.
+- Speed of the last successful ping to ns.google.com.
 
-Here is the past half hour of network quality history.
+Here is the past half hour of my network quality history.
 
-In this example things were going great, then there
-has been a slowdown in the past 15 minutes. I am
-working at a coffee shop right now and perhaps someone
-is watching videos.
+In this example things were going great, then my
+connection slowed down over the last 15 minutes.
+I am working in a crowded coffee shop right now
+and perhaps a few of us are watching videos.
 
 ```
 Time  Tot Num Good   Packet loss       Avg Speed
@@ -69,7 +69,7 @@ Time  Tot Num Good   Packet loss       Avg Speed
 - History lines show the end time for each period.
 - 300 pings over 5 minutes.
 - Count of good pings over the period.
-- Packet loss percentage over the entire period.
+- Packet loss percentage.
 - Average speed over the entire period.
 
 ### Failure modes
