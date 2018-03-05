@@ -1,0 +1,116 @@
+#!/usr/bin/env ruby
+
+require 'pty'
+
+class Pings
+
+  Host = 'ns.google.com'
+
+  def run
+    while true
+      ping()
+      Process.waitall()
+    end
+  rescue Interrupt
+    puts
+  end
+
+  def ping()
+
+    current_mode  = 'good'  # Are we currently good or frozen?
+    mode_count    = 0       # For how long?
+    total_count   = 0
+    totally_good  = 0
+    transmitted   = ''
+    round_trip    = ''
+    ms            = 0.0
+    filter_msg    = nil
+
+    PTY.spawn( "ping -c 300 #{Host}" ) do |stdin, stdout, pid|
+      stdin.each do |line|
+
+        # Parse the line.
+        if line =~ /bytes from/
+          if line =~ /time=(\S+)/
+            # 64 bytes from 104.27.146.148: icmp_seq=48 ttl=61 time=24.780 ms
+            ms = $1.to_f
+            new_mode  = 'good'
+          else
+            # Multiline output shows both timeout and filter message.
+						# Request timeout for icmp_seq 5
+						# 92 bytes from 10.128.128.128: Communication prohibited by filter
+						# Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
+						# 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
+            unless filter_msg
+              puts if total_count > 0
+              puts filter_msg = line
+            end
+            next
+          end
+        elsif line =~ /timeout/
+          # Request timeout for icmp_seq 3
+          new_mode  = 'fail'
+        else
+          if line =~ /transmitted/
+            # 5 packets transmitted, 5 packets received, 0.0% packet loss
+            transmitted = line
+          elsif line =~ /round-trip/
+            # round-trip min/avg/max/stddev = 0.063/0.082/0.122/0.022 ms
+            round_trip = line
+          elsif line =~ /PING/
+            # PING localhost (127.0.0.1): 56 data bytes
+            unless @pinged
+              puts line
+              @pinged = true
+            end
+          elsif line =~ /cannot resolve/
+            # ping: cannot resolve xxx: Unknown host
+            # Ping quits so we wait 10 seconds to try again.
+            STDOUT.write "\r#{ts} #{line.chomp}"
+            STDOUT.flush
+            sleep 10
+          end
+          next
+        end
+
+        # Pulse report.
+        if new_mode != current_mode
+          current_mode  = new_mode
+          mode_count    = 0
+        end
+        mode_count    += 1
+        totally_good  += 1 if current_mode == 'good'
+        total_count   += 1
+        put_line(total_count, totally_good, current_mode, mode_count, ms)
+
+      end
+    end
+
+    # Summary line.
+    if transmitted =~ /(\d+) packets transmitted, (\d+) packets received/
+        total_count   = $1.to_i
+        totally_good  = $2.to_i
+        if round_trip =~ / (\S+) ms/
+          ms = $1.split('/')[1].to_f
+        end
+        put_line(total_count, totally_good, 'good', totally_good, ms)
+    end
+    puts
+  end
+
+  # Rewrite current line.
+  def put_line(total_count, totally_good, current_mode, mode_count, ms)
+    loss = ((total_count - totally_good) * 100.0) / total_count
+    line = sprintf("\r%s %3d %3d %s %5.1f%% packet loss %7.2f ms",
+                  ts, total_count, mode_count, current_mode, loss, ms)
+    STDOUT.write line
+    STDOUT.flush
+  end
+
+  def ts
+    Time.now.strftime('%H:%M')
+  end
+
+end
+
+Pings.new.run
