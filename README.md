@@ -1,6 +1,12 @@
 # wifi-watch
 
-Continuously monitor your network quality.
+Continuously monitor your network quality!
+
+```
+16:55 300 298 good   0.7% packet loss  250.83 ms
+17:00 300 296 good   1.3% packet loss  219.14 ms
+17:03 136  67 good   1.5% packet loss  676.17 ms
+```
 
 Run wifi-watch in a terminal so that you can easily check
 your network quality at this second and how it has been
@@ -28,9 +34,9 @@ git clone https://github.com/jgorman/wifi-watch.git
 sudo cp wifi-watch/wifi-watch /usr/local/bin
 ```
 
-### Sample Output
+### Current Period Status Counts
 
-Here is a sample current bottom line.
+The bottom output line shows counts for the current period.
 
 ```
 Time  Tot Run Status Packet loss       Speed
@@ -44,6 +50,8 @@ Time  Tot Run Status Packet loss       Speed
 - Status of the last ping: "good" or "fail".
 - Packet loss percentage over the current period.
 - Speed of the last successful ping to ns.google.com.
+
+### History Lines
 
 Here is the past half hour of my network quality history.
 
@@ -80,7 +88,8 @@ Here we have lost our internet connection for the last 39 seconds.
 17:59 207  39 fail  19.3% packet loss   62.55 ms
 ```
 
-wifi-watch will pass error messages out from ping. Here we got our network connection back.
+wifi-watch will pass a few error messages out from ping.
+Here we got our network connection back.
 
 ```
 18:00 300 167 good  44.3% packet loss  107.41 ms
@@ -88,7 +97,7 @@ wifi-watch will pass error messages out from ping. Here we got our network conne
 18:04 203 141 good   5.4% packet loss  218.35 ms
 ```
 
-Sometimes a coffee shop wifi login will time out and you will
+Sometimes your coffee shop wifi login will time out and you will
 need to login again. Here is what wifi-watch will show.
 
 ```
