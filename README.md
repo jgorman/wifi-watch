@@ -1,6 +1,6 @@
 # wifi-watch
 
-Continuously monitor your network quality!
+Continuously monitor your network speed and quality!
 
 ```
 16:55 300 298 good   0.7% packet loss  250.83 ms
