@@ -86,7 +86,7 @@ Time  Tot Run Good Failed Round Trip
 
 #### Ping success or failure run length.
 
-On the current bottom line the run length count resets to one
+On the current bottom line the run length count resets to 1
 on every transition between "good" and "fail" modes. This way
 we can tell at a glance how long we have been in the current
 state. In a still connected high packet loss environment
