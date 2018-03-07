@@ -28,7 +28,7 @@ class Pings
     total_count     = 0     # Pings so far.
     totally_good    = 0     # Successful pings.
     ping_ms         = 0.0   # Latest successful ping time in milliseconds.
-    packets_line    = ''    # Ping packets recieved summary line.
+    packets_line    = ''    # Ping packets received summary line.
     round_trip_line = ''    # Ping round-trip milliseconds summary line.
     filter_line     = nil   # Special wifi login timeout message.
 
