@@ -17,7 +17,7 @@ holding up since you began recording hours or days ago.
 wifi-watch will run ping every second and refresh the
 current line with the current counts. Every 5 minutes the
 current counts are saved as a history line and a new
-5 minute count period begins.
+5 minute accounting period begins.
 
 This can be invaluable in monitoring your home internet
 for systematic service degradation. Service technicians
@@ -84,9 +84,9 @@ Time  Tot Run Good Failed Round Trip
 
 ### Failure Modes
 
-#### Ping failure or success run length.
+#### Ping success or failure run length.
 
-On the current bottom line the run length count resets to zero
+On the current bottom line the run length count resets to one
 on every transition between "good" and "fail" modes. This way
 we can tell at a glance how long we have been in the current
 state. In a still connected high packet loss environment
