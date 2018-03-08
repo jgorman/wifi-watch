@@ -44,7 +44,7 @@ sudo cp wifi-watch/wifi-watch /usr/local/bin
 
 ### Usage: wifi-watch [options]
 
-```bash
+```
 -h, --host HOST       Host to ping [ns.google.com].
 -c, --count SECONDS   Accounting period [300].
     --debug-to FILE   Write ping output to a file for debugging.
@@ -82,7 +82,6 @@ and perhaps a few of us are watching videos.
 ```
 Time  Tot Run Good Failed Round Trip
 ----- --- --- ---- ------ ----------
-16:25 300 298 good   0.7%   73.35 ms
 16:30 300 298 good   0.7%   63.84 ms
 16:35 300 300 good   0.0%   76.28 ms
 16:40 300 300 good   0.0%   74.45 ms
@@ -146,7 +145,7 @@ response message.
 It is easy to capture the raw ping output to a file for later
 replay and testing.
 
-```bash
+```
 wifi-watch --count 10 --debug-to ping1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
@@ -162,7 +161,7 @@ The ping output file includes the timestamp for each line
 so replaying the file later on should result in
 identical appearing output.
 
-```bash
+```
 wifi-watch --debug-from ping1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
