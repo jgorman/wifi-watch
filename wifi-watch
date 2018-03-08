@@ -1,23 +1,66 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
+require 'ostruct'
 require 'pty'
 
-class Pings
+class WifiWatch
 
-  Host = 'ns.google.com'    # A safe bet for a while.
-  Period = 300              # Five minute accounting periods.
-
-  @showed_header = false    # Have we showed the destination ip and header yet?
-  @dns_failing   = false    # Are DNS lookups failing?
+  Default_host    = "ns.google.com" # Ping target host.
+  Default_count   = 300             # Accounting period in seconds.
+  Program         = "wifi-watch"
+  Version         = "0.9.0"
 
   def run
-    last_err = nil
+    @shown_header = false # Have we shown the column headers yet?
+    @dns_failing  = false # Are DNS lookups failing?
+    @options      = get_options()
+
     while true
       ping_period()         # Run one accounting period.
       Process.waitall()     # Soak up any zombie pings.
     end
   rescue Interrupt
     puts                    # Provide a fresh line for the command prompt.
+  end
+
+  def get_options
+    options       = OpenStruct.new
+    options.host  = Default_host
+    options.count = Default_count
+
+    opt_parser = OptionParser.new do |opt|
+      opt.banner = "Usage: #{Program} [OPTIONS]"
+      opt.separator ""
+      opt.on("-h", "--host HOST", "Host to ping [#{options.host}].") do |host|
+        options.host = host
+      end
+      opt.on("-c", "--count SECONDS", Integer,
+             "Accounting period in seconds [#{options.count}].") do |count|
+        options.count = count
+      end
+      opt.on("-v", "--version", "Version.") do
+        puts Version
+        exit
+      end
+      opt.on("--help", "This message.") do
+        puts opt_parser
+        exit
+      end
+    end
+
+    begin
+      opt_parser.parse!
+    rescue => e
+      puts
+      puts e
+      puts
+      puts opt_parser
+      puts
+      exit
+    end
+
+    return options
   end
 
   # Run ping for one accounting period.
@@ -33,7 +76,8 @@ class Pings
     filter_line     = nil   # Special wifi login timeout message.
 
     # Run ping and process each output line.
-    PTY.spawn( "ping -c #{Period} #{Host}" ) do |stdin, stdout, pid|
+    cmd = "ping -c #{@options.count} #{@options.host}"
+    PTY.spawn( cmd ) do |stdin, stdout, pid|
       stdin.each do |line|
 
         # When DNS is down we cannot even find the host ip to ping.
@@ -63,12 +107,12 @@ class Pings
           #
           # PING ns.google.com (216.239.32.10): 56 data bytes
           #
-          unless @showed_header
+          unless @shown_header
             puts line # Show the destination name and ip.
             puts
             puts "Time  Tot Run Good Failed Round Trip"
             puts "----- --- --- ---- ------ ----------"
-            @showed_header = true # Only show these once per wifi-watch.
+            @shown_header = true # Only show these once per wifi-watch.
           end
 
         elsif line =~ /bytes from/
@@ -113,7 +157,7 @@ class Pings
         end
 
         if new_mode
-          # Ping pulse report.
+          # Update the counts with success or failure.
           if new_mode != current_mode
             current_mode  = new_mode
             mode_count    = 0
@@ -154,4 +198,4 @@ class Pings
 
 end
 
-Pings.new.run
+WifiWatch.new.run

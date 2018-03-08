@@ -3,6 +3,9 @@
 Continuously monitor your network speed and quality!
 
 ```
+$ wifi-watch
+PING ns.google.com (216.239.32.10): 56 data bytes
+
 Time  Tot Run Good Failed Round Trip
 ----- --- --- ---- ------ ----------
 16:55 300 298 good   0.7%  250.83 ms
@@ -15,9 +18,9 @@ your network quality at this second and how it has been
 holding up since you began recording hours or days ago.
 
 wifi-watch will run ping every second and refresh the
-current line with the current counts. Every 5 minutes the
-current counts are saved as a history line and a new
-5 minute accounting period begins.
+current line with the current counts. At the end of
+an accounting period the current counts are saved
+as a history line and a new accounting period begins.
 
 This can be invaluable in monitoring your home internet
 for systematic service degradation. Service technicians
@@ -37,6 +40,15 @@ git clone https://github.com/jgorman/wifi-watch.git
 sudo cp wifi-watch/wifi-watch /usr/local/bin
 ```
 
+### Usage: wifi-watch [options]
+
+```bash
+-h, --host <host>      Host to ping [ns.google.com].
+-c, --count <seconds>  Accounting period [300].
+-v, --version          Version.
+    --help             This message.
+```
+
 ### Current Period Status Counts
 
 The current output line shows counts for the current period.
@@ -48,11 +60,11 @@ Time  Tot Run Good Failed Round Trip
 ```
 
 - Current time.
-- Pings attempted so far in the current period.
+- 136 pings attempted so far in the current period.
 - Run of 67 good pings in a row!
 - Status of the last ping: "good" or "fail".
 - Packet loss percentage so far.
-- Round trip time of the last successful ping to ns.google.com.
+- Round trip time of the last successful ping.
 
 ### History Lines
 
@@ -102,8 +114,8 @@ Time  Tot Run Good Failed Round Trip
 
 #### DNS inaccessible.
 
-At the beginning of an accounting period ping does a DNS
-lookup on ns.google.com. When the network is not connected
+At the beginning of an accounting period ping does a DNS lookup
+to find your target host ip address. When the network is not connected
 this DNS lookup will fail and you will see the error message
 with the current time.
 
@@ -125,5 +137,14 @@ response message.
 92 bytes from 10.128.128.128: Communication prohibited by filter
 ```
 
-If you find more failure modes try to capture the ping output
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/jgorman/wifi-watch.
+
+If you discover more failure modes try to capture the ping output
 and open an issue. Thanks!
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
