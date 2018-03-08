@@ -189,7 +189,7 @@ class WifiWatch
         unless @shown_header
           puts line # Show the destination name and ip.
           puts
-          puts "Time  Ping  Run Good Failed Round Trip"
+          puts "Time  Ping  Run Mode Failed Round Trip"
           puts "----- ---- ---- ---- ------ ----------"
           @shown_header = true # Only show these once per wifi-watch.
         end

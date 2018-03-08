@@ -6,7 +6,7 @@ Continuously monitor your network speed and quality!
 $ wifi-watch
 PING ns.google.com (216.239.32.10): 56 data bytes
 
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 16:55  300  298 good   0.7%  250.83 ms
 17:00  300  296 good   1.3%  219.14 ms
@@ -58,7 +58,7 @@ sudo cp wifi-watch/wifi-watch /usr/local/bin
 The current output line shows counts for the current period.
 
 ```
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 17:03  136   67 good   1.5%  676.17 ms
 ```
@@ -80,7 +80,7 @@ I am working in a crowded coffee shop right now
 and perhaps a few of us are watching videos.
 
 ```
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 16:30  300  298 good   0.7%   63.84 ms
 16:35  300  300 good   0.0%   76.28 ms
@@ -110,7 +110,7 @@ the runs will be short and switch modes often.
 Here we have lost our internet connection for the last 39 seconds.
 
 ```
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 17:59  207   39 fail  19.3%   62.55 ms
 ```
@@ -123,7 +123,7 @@ this DNS lookup will fail and you will see the error message
 with the current time.
 
 ```
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 08:40  300   51 good  83.0%   68.65 ms
 08:41 ping: cannot resolve ns.google.com: Unknown host
@@ -149,7 +149,7 @@ replay and testing.
 wifi-watch --count 10 --debug-to ping1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 10:06   10   10 good   0.0%  127.41 ms
 10:06   10    3 good  70.0%   34.28 ms
@@ -165,7 +165,7 @@ identical appearing output.
 wifi-watch --debug-from ping1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
-Time  Ping  Run Good Failed Round Trip
+Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 10:06   10   10 good   0.0%  127.41 ms
 10:06   10    3 good  70.0%   34.28 ms
