@@ -33,7 +33,9 @@ on a moment to moment basis.
 
 ### Installation
 
-wifi-watch will run with any ruby version. Clone the repository and copy wifi-watch into your path.
+wifi-watch is a stand alone ruby script which will run with
+any ruby version and has no dependencies. Clone the repository
+and copy wifi-watch into your path.
 
 ```
 git clone https://github.com/jgorman/wifi-watch.git
@@ -43,10 +45,10 @@ sudo cp wifi-watch/wifi-watch /usr/local/bin
 ### Usage: wifi-watch [options]
 
 ```bash
--h, --host <host>      Host to ping [ns.google.com].
--c, --count <seconds>  Accounting period [300].
--v, --version          Version.
-    --help             This message.
+-h, --host HOST      Host to ping [ns.google.com].
+-c, --count SECONDS  Accounting period [300].
+-v, --version        Version.
+    --help           This message.
 ```
 
 ### Current Period Status Counts

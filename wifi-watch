@@ -36,7 +36,7 @@ class WifiWatch
         options.host = host
       end
       opt.on("-c", "--count SECONDS", Integer,
-             "Accounting period in seconds [#{options.count}].") do |count|
+             "Accounting period [#{options.count}].") do |count|
         options.count = count
       end
       opt.on("-v", "--version", "Version.") do
