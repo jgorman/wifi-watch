@@ -14,14 +14,53 @@ class WifiWatch
   def run
     @shown_header = false # Have we shown the column headers yet?
     @dns_failing  = false # Are DNS lookups failing?
+    @debug_to     = nil   # Save timestamped ping output here.
+    @debug_from   = nil   # Read timestamped ping input here.
     @options      = get_options()
 
-    while true
-      ping_period()         # Run one accounting period.
-      Process.waitall()     # Soak up any zombie pings.
+    if @options.debug_to
+      begin
+        @debug_to = File.open(@options.debug_to, "w")
+      rescue => e
+        puts
+        puts "debug_to=#{@options.debug_to}: #{e}"
+        puts
+        exit
+      end
     end
+
+    if @options.debug_from
+      begin
+        @debug_from = File.open(@options.debug_from, "r")
+      rescue => e
+        puts
+        puts "debug_from=#{@options.debug_from}: #{e}"
+        puts
+        exit
+      end
+
+      until @debug_from.eof?
+        ping_period(@debug_from) # Run up to next "EOF" line.
+      end
+
+    else
+
+      while true
+        cmd = "ping -c #{@options.count} #{@options.host}"
+        stdin, stdout, pid = PTY.spawn( cmd )
+        ping_period(stdin)    # Run one accounting period.
+        Process.waitall()     # Soak up any zombie pings.
+      end
+
+    end
+
+
   rescue Interrupt
     puts                    # Provide a fresh line for the command prompt.
+  ensure
+    if @debug_to
+      @debug_to.close
+    end
   end
 
   def get_options
@@ -30,23 +69,39 @@ class WifiWatch
     options.count = Default_count
 
     opt_parser = OptionParser.new do |opt|
+
       opt.banner = "Usage: #{Program} [OPTIONS]"
       opt.separator ""
+
       opt.on("-h", "--host HOST", "Host to ping [#{options.host}].") do |host|
         options.host = host
       end
+
       opt.on("-c", "--count SECONDS", Integer,
              "Accounting period [#{options.count}].") do |count|
         options.count = count
       end
+
+      opt.on("--debug-to FILE",
+             "Send ping output to a file for debugging.") do |debug_to|
+        options.debug_to = debug_to
+      end
+
+      opt.on("--debug-from FILE",
+             "Simulate ping input from a file for testing.") do |debug_from|
+        options.debug_from = debug_from
+      end
+
       opt.on("-v", "--version", "Version.") do
         puts Version
         exit
       end
+
       opt.on("--help", "This message.") do
         puts opt_parser
         exit
       end
+
     end
 
     begin
@@ -64,7 +119,7 @@ class WifiWatch
   end
 
   # Run ping for one accounting period.
-  def ping_period()
+  def ping_period(stdin)
 
     current_mode    = nil   # Are we currently good or failing?
     mode_count      = 0     # For how long in a row?
@@ -74,101 +129,119 @@ class WifiWatch
     packets_line    = ''    # Ping packets received summary line.
     round_trip_line = ''    # Ping round-trip milliseconds summary line.
     filter_line     = nil   # Special wifi login timeout message.
+    time_line       = nil   # Latest line timestamp.
 
-    # Run ping and process each output line.
-    cmd = "ping -c #{@options.count} #{@options.host}"
-    PTY.spawn( cmd ) do |stdin, stdout, pid|
-      stdin.each do |line|
+    # jj
+    stdin.each do |line|
 
-        # When DNS is down we cannot even find the host ip to ping.
-        if line =~ /cannot resolve/
-          # ping: cannot resolve ns.google.com: Unknown host
-          STDOUT.write "\r#{ts} #{line.chomp}"
-          STDOUT.flush
-
-          # Ping quits quickly so we wait a few seconds before trying again.
-          sleep 3
-          @dns_failing = true
-          return
-        else
-          # If we were previously failing, pop to a fresh line.
-          if @dns_failing
-            puts
-            @dns_failing = false
-          end
-        end
-
-        # This records a ping success or failure line. Nil means neither.
-        new_mode = nil
-
-        if line =~ /PING/
-          #
-          # The first ping output line shows the destination ip.
-          #
-          # PING ns.google.com (216.239.32.10): 56 data bytes
-          #
-          unless @shown_header
-            puts line # Show the destination name and ip.
-            puts
-            puts "Time  Tot Run Good Failed Round Trip"
-            puts "----- --- --- ---- ------ ----------"
-            @shown_header = true # Only show these once per wifi-watch.
-          end
-
-        elsif line =~ /bytes from/
-
-          if line =~ /time=(\S+)/
-            #
-            # Success! Record the round trip time.
-            #
-            # 64 bytes from 104.27.146.148: icmp_seq=48 ttl=61 time=24.780 ms
-            # 
-            ping_ms = $1.to_f
-            new_mode  = 'good'
-
-          else
-            #
-            # Here the wifi login has timed out and is blocking packets.
-            # Multi line ping output shows both the timeout and filter message
-            # lines plus some additional diagnostic lines that we ignore.
-            #
-						# Request timeout for icmp_seq 5
-						# 92 bytes from 10.128.128.128: Communication prohibited by filter
-						# Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
-						# 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
-            #
-            unless filter_line
-              puts if total_count > 0 # In progress so pop a fresh line.
-              puts filter_line = line  # Show the message once.
-            end
-          end
-
-        elsif line =~ /timeout/
-          # Request timeout for icmp_seq 3
-          new_mode  = 'fail'
-
-        elsif line =~ /transmitted/
-          # 5 packets transmitted, 5 packets received, 0.0% packet loss
-          packets_line = line
-
-        elsif line =~ /round-trip/
-          # round-trip min/avg/max/stddev = 0.063/0.082/0.122/0.022 ms
-          round_trip_line = line
-        end
-
-        if new_mode
-          # Update the counts with success or failure.
-          if new_mode != current_mode
-            current_mode  = new_mode
-            mode_count    = 0
-          end
-          mode_count    += 1
-          totally_good  += 1 if current_mode == 'good'
-          total_count   += 1
-          put_line(total_count, totally_good, current_mode, mode_count, ping_ms)
-        end
-
+      line.chomp!
+      if @debug_from
+        break if (line == "EOF")
+        time, line = line.split(" ", 2)
+        time_line = Time.at(time.to_i)
+      else
+        time_line = Time.now
       end
+
+      if @debug_to
+        @debug_to.puts "#{time_line.to_i} #{line}"
+        @debug_to.flush
+      end
+
+      # When DNS is down we cannot even find the host ip to ping.
+      if line =~ /cannot resolve/
+        # ping: cannot resolve ns.google.com: Unknown host
+        STDOUT.write "\r#{time_line.strftime('%H:%M')} #{line}"
+        STDOUT.flush
+
+        # DNS can fail quickly so we wait a second before trying again.
+        sleep 1
+        @dns_failing = true
+        next
+      end
+
+      # If we were previously failing, pop to a fresh line.
+      if @dns_failing
+        puts
+        @dns_failing = false
+      end
+
+      # This records a ping success or failure line. Nil means neither.
+      new_mode = nil
+
+      if line =~ /PING/
+        #
+        # The first ping output line shows the destination ip.
+        #
+        # PING ns.google.com (216.239.32.10): 56 data bytes
+        #
+        unless @shown_header
+          puts line # Show the destination name and ip.
+          puts
+          puts "Time  Tot Run Good Failed Round Trip"
+          puts "----- --- --- ---- ------ ----------"
+          @shown_header = true # Only show these once per wifi-watch.
+        end
+
+      elsif line =~ /bytes from/
+
+        if line =~ /time=(\S+)/
+          #
+          # Success! Record the round trip time.
+          #
+          # 64 bytes from 104.27.146.148: icmp_seq=48 ttl=61 time=24.780 ms
+          # 
+          ping_ms = $1.to_f
+          new_mode  = 'good'
+
+        else
+          #
+          # Here the wifi login has timed out and is blocking packets.
+          # Multi line ping output shows both the timeout and filter message
+          # lines plus some additional diagnostic lines that we ignore.
+          #
+          # Request timeout for icmp_seq 5
+          # 92 bytes from 10.128.128.128: Communication prohibited by filter
+          # Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
+          # 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
+          #
+          unless filter_line
+            puts if total_count > 0 # In progress so pop a fresh line.
+            puts filter_line = line  # Show the message once.
+          end
+        end
+
+      elsif line =~ /timeout/
+        # Request timeout for icmp_seq 3
+        new_mode  = 'fail'
+
+      elsif line =~ /transmitted/
+        # 5 packets transmitted, 5 packets received, 0.0% packet loss
+        packets_line = line
+
+      elsif line =~ /round-trip/
+        # round-trip min/avg/max/stddev = 0.063/0.082/0.122/0.022 ms
+        round_trip_line = line
+      end
+
+      if new_mode
+        # Update the counts with success or failure.
+        if new_mode != current_mode
+          current_mode  = new_mode
+          mode_count    = 0
+        end
+        mode_count    += 1
+        totally_good  += 1 if current_mode == 'good'
+        total_count   += 1
+        put_line(time_line, total_count, totally_good,
+                 current_mode, mode_count, ping_ms)
+      end
+
+    end
+
+    if @debug_to
+      @debug_to.puts "EOF"
+      @debug_to.flush
     end
 
     # Summary line.
@@ -178,22 +251,21 @@ class WifiWatch
         if round_trip_line =~ / (\S+) ms/
           avg_ms = $1.split('/')[1].to_f  # Extract the average time.
         end
-        put_line(total_count, totally_good, 'good', totally_good, avg_ms)
+        put_line(time_line, total_count, totally_good,
+                 'good', totally_good, avg_ms)
     end
     puts  # Leave this summary line as history.
   end
 
   # Rewrite current line.
-  def put_line(total_count, totally_good, current_mode, mode_count, ms)
+  def put_line(time_line, total_count, totally_good,
+               current_mode, mode_count, ms)
     loss = ((total_count - totally_good) * 100.0) / total_count
     line = sprintf("\r%s %3d %3d %s %5.1f%% %7.2f ms",
-                  ts, total_count, mode_count, current_mode, loss, ms)
+                   time_line.strftime('%H:%M'),
+                   total_count, mode_count, current_mode, loss, ms)
     STDOUT.write line
     STDOUT.flush
-  end
-
-  def ts
-    Time.now.strftime('%H:%M')
   end
 
 end
