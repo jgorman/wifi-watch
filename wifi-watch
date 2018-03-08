@@ -13,7 +13,8 @@ class WifiWatch
 
   def run
     @shown_header = false # Have we shown the column headers yet?
-    @dns_failing  = false # Are DNS lookups failing?
+    @dns_failing  = false # Are DNS lookups currently failing?
+    @display_line = nil   # The current display line.
     @debug_to     = nil   # Save timestamped ping output here.
     @debug_from   = nil   # Read timestamped ping input here.
     @options      = get_options()
@@ -30,6 +31,8 @@ class WifiWatch
     end
 
     if @options.debug_from
+
+      # We are simulating ping output from a captured --debug-to file.
       begin
         @debug_from = File.open(@options.debug_from, "r")
       rescue => e
@@ -39,14 +42,16 @@ class WifiWatch
         exit
       end
 
+      # Call ping_period() for each ping run section.
       until @debug_from.eof?
-        ping_period(@debug_from) # Run up to next "EOF" line.
+        ping_period(@debug_from) # Reads up to next "END_OF_PING" line.
       end
 
     else
 
+      # Run ping multiple times.
+      cmd = "ping -c #{@options.count} #{@options.host}"
       while true
-        cmd = "ping -c #{@options.count} #{@options.host}"
         stdin, stdout, pid = PTY.spawn( cmd )
         ping_period(stdin)    # Run one accounting period.
         Process.waitall()     # Soak up any zombie pings.
@@ -54,9 +59,8 @@ class WifiWatch
 
     end
 
-
   rescue Interrupt
-    puts                    # Provide a fresh line for the command prompt.
+    commit_line()
   ensure
     if @debug_to
       @debug_to.close
@@ -83,12 +87,12 @@ class WifiWatch
       end
 
       opt.on("--debug-to FILE",
-             "Send ping output to a file for debugging.") do |debug_to|
+             "Write ping output to a file for debugging.") do |debug_to|
         options.debug_to = debug_to
       end
 
       opt.on("--debug-from FILE",
-             "Simulate ping input from a file for testing.") do |debug_from|
+             "Read ping input from a file for testing.") do |debug_from|
         options.debug_from = debug_from
       end
 
@@ -131,12 +135,18 @@ class WifiWatch
     filter_line     = nil   # Special wifi login timeout message.
     time_line       = nil   # Latest line timestamp.
 
-    # jj
+    # Process each line of ping output.
     stdin.each do |line|
 
       line.chomp!
       if @debug_from
-        break if (line == "EOF")
+
+        # Read from the debugging source file up to the end of this ping run.
+        if (line == "END_OF_PING")
+          break # End this ping accounting period run.
+        end
+
+        # Simulate the past by loading the effective time for this line.
         time, line = line.split(" ", 2)
         time_line = Time.at(time.to_i)
       else
@@ -144,6 +154,7 @@ class WifiWatch
       end
 
       if @debug_to
+        # Capture this ping output line with the timestamp for later debugging.
         @debug_to.puts "#{time_line.to_i} #{line}"
         @debug_to.flush
       end
@@ -151,27 +162,27 @@ class WifiWatch
       # When DNS is down we cannot even find the host ip to ping.
       if line =~ /cannot resolve/
         # ping: cannot resolve ns.google.com: Unknown host
-        STDOUT.write "\r#{time_line.strftime('%H:%M')} #{line}"
-        STDOUT.flush
+        display_line("#{format_time(time_line)} #{line}")
 
         # DNS can fail quickly so we wait a second before trying again.
-        sleep 1
+        sleep 1 unless @debug_from
         @dns_failing = true
-        next
+        next # In debug mode we need to swallow the END_OF_PING line.
       end
 
-      # If we were previously failing, pop to a fresh line.
+      # If DNS was previously failing, pop to a fresh line.
       if @dns_failing
-        puts
+        commit_line()
         @dns_failing = false
       end
 
-      # This records a ping success or failure line. Nil means neither.
+      # This indicates a ping success or failure line. Nil means neither.
       new_mode = nil
 
+      # Parse the line.
       if line =~ /PING/
         #
-        # The first ping output line shows the destination ip.
+        # The first ping output line shows the destination host and ip.
         #
         # PING ns.google.com (216.239.32.10): 56 data bytes
         #
@@ -190,7 +201,7 @@ class WifiWatch
           # Success! Record the round trip time.
           #
           # 64 bytes from 104.27.146.148: icmp_seq=48 ttl=61 time=24.780 ms
-          # 
+          #
           ping_ms = $1.to_f
           new_mode  = 'good'
 
@@ -206,8 +217,9 @@ class WifiWatch
           # 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
           #
           unless filter_line
-            puts if total_count > 0 # In progress so pop a fresh line.
-            puts filter_line = line  # Show the message once.
+            commit_line()
+            puts filter_line
+            filter_line = line  # Show the message once.
           end
         end
 
@@ -233,39 +245,71 @@ class WifiWatch
         mode_count    += 1
         totally_good  += 1 if current_mode == 'good'
         total_count   += 1
-        put_line(time_line, total_count, totally_good,
-                 current_mode, mode_count, ping_ms)
+        show_stats(time_line, total_count, totally_good,
+                   current_mode, mode_count, ping_ms)
       end
 
     end
 
     if @debug_to
-      @debug_to.puts "EOF"
+      # Insert a ping run separator line into the debugging file.
+      @debug_to.puts "END_OF_PING"
       @debug_to.flush
     end
+    if @dns_failing
+      return
+    end
 
-    # Summary line.
+    # Final summary line.
     if packets_line =~ /(\d+) packets transmitted, (\d+) packets received/
         total_count   = $1.to_i
         totally_good  = $2.to_i
         if round_trip_line =~ / (\S+) ms/
           avg_ms = $1.split('/')[1].to_f  # Extract the average time.
         end
-        put_line(time_line, total_count, totally_good,
+        show_stats(time_line, total_count, totally_good,
                  'good', totally_good, avg_ms)
     end
-    puts  # Leave this summary line as history.
+    commit_line() # Leave this summary line as history.
   end
 
-  # Rewrite current line.
-  def put_line(time_line, total_count, totally_good,
-               current_mode, mode_count, ms)
+  # Show the statistics.
+  def show_stats(time_line, total_count, totally_good,
+                 current_mode, mode_count, ms)
     loss = ((total_count - totally_good) * 100.0) / total_count
-    line = sprintf("\r%s %3d %3d %s %5.1f%% %7.2f ms",
-                   time_line.strftime('%H:%M'),
+    line = sprintf("%s %3d %3d %s %5.1f%% %7.2f ms",
+                   format_time(time_line),
                    total_count, mode_count, current_mode, loss, ms)
-    STDOUT.write line
-    STDOUT.flush
+    display_line(line)
+  end
+
+  def format_time(time)
+    time.strftime('%H:%M')
+  end
+
+  # Rewrite the current display line or save it for final debugging result.
+  def display_line(line)
+    # In debug mode we only want the final line value to show.
+    @display_line = line
+    unless @debug_from
+      # Display this current line.
+      STDOUT.write "\r"   # Move to the start of this line.
+      STDOUT.write line   # Write over it.
+    end
+  end
+
+  # If there is a current display line, commit it to history.
+  def commit_line()
+    if @display_line
+      if @debug_from
+        # Debug mode show final line value as history.
+        puts @display_line
+      else
+        # Normal mode advance to the next line leaving this line as history.
+        puts
+      end
+      @display_line = nil
+    end
   end
 
 end

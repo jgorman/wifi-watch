@@ -45,10 +45,12 @@ sudo cp wifi-watch/wifi-watch /usr/local/bin
 ### Usage: wifi-watch [options]
 
 ```bash
--h, --host HOST      Host to ping [ns.google.com].
--c, --count SECONDS  Accounting period [300].
--v, --version        Version.
-    --help           This message.
+-h, --host HOST       Host to ping [ns.google.com].
+-c, --count SECONDS   Accounting period [300].
+    --debug-to FILE   Write ping output to a file for debugging.
+    --debug-from FILE Read ping input from a file for testing.
+-v, --version         Version.
+    --help            This message.
 ```
 
 ### Current Period Status Counts
@@ -139,13 +141,51 @@ response message.
 92 bytes from 10.128.128.128: Communication prohibited by filter
 ```
 
+## Testing and Debugging
+
+It is easy to capture the raw ping output to a file for later
+replay and testing.
+
+```bash
+wifi-watch --count 10 --debug-to ping1.log
+PING ns.google.com (216.239.32.10): 56 data bytes
+
+Time  Tot Run Good Failed Round Trip
+----- --- --- ---- ------ ----------
+10:06  10  10 good   0.0%  127.41 ms
+10:06  10   3 good  70.0%   34.28 ms
+10:06 ping: cannot resolve ns.google.com: Unknown host
+10:06   5   1 fail  20.0%   55.16 ms^C
+```
+
+The ping output file includes the timestamp for each line
+so replaying the file later on should result in
+identical appearing output.
+
+```bash
+wifi-watch --debug-from ping1.log
+PING ns.google.com (216.239.32.10): 56 data bytes
+
+Time  Tot Run Good Failed Round Trip
+----- --- --- ---- ------ ----------
+10:06  10  10 good   0.0%  127.41 ms
+10:06  10   3 good  70.0%   34.28 ms
+10:06 ping: cannot resolve ns.google.com: Unknown host
+10:06   5   1 fail  20.0%   55.16 ms
+```
+
+Although the --debug-from output should appear to be the same
+as live ping monitoring there is a difference. Instead of emitting
+every intermediate count on the current line, only the final
+line is output. This helps keep test cases short and readable.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/jgorman/wifi-watch.
 
-If you discover more failure modes try to capture the ping output
-and open an issue. Thanks!
+If you discover more failure modes capture the ping output
+using --debug-to and open an issue. Thanks!
 
 ## License
 
