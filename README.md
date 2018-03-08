@@ -14,7 +14,7 @@ Time  Ping  Run Mode Failed Round Trip
 ```
 
 Run wifi-watch in a terminal so that you can easily check
-your network quality at this second and how it has been
+your network quality at this moment and how it has been
 holding up since you began recording hours or days ago.
 
 wifi-watch will run ping every second and refresh the
@@ -39,7 +39,7 @@ and copy wifi-watch into your path.
 
 ```
 git clone https://github.com/jgorman/wifi-watch.git
-sudo cp wifi-watch/wifi-watch /usr/local/bin
+sudo cp wifi-watch/bin/wifi-watch /usr/local/bin
 ```
 
 ### Usage: wifi-watch [options]
