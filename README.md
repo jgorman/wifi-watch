@@ -45,12 +45,12 @@ sudo cp wifi-watch/wifi-watch /usr/local/bin
 ### Usage: wifi-watch [options]
 
 ```
--h, --host HOST       Host to ping [ns.google.com].
--c, --count SECONDS   Accounting period [300].
-    --debug-to FILE   Write ping output to a file for debugging.
-    --debug-from FILE Read ping input from a file for testing.
--v, --version         Version.
-    --help            This message.
+-h, --host HOST         Host to ping [ns.google.com].
+-c, --count SECONDS     Accounting period [600].
+    --debug-to FILE     Write ping output to a file for debugging.
+    --debug-from FILE   Read ping input from a file for testing.
+-v, --version           Version.
+    --help              This message.
 ```
 
 ### Current Period Status Counts
