@@ -104,7 +104,7 @@ On the current bottom line the run length count resets to 1
 on every transition between "good" and "fail" modes. This way
 we can tell at a glance how long we have been in the current
 state. In a still connected high packet loss environment
-the runs will be short and switch back and forth.
+the runs will be short and switch modes often.
 
 Here we have lost our internet connection for the last 39 seconds.
 
