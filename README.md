@@ -6,11 +6,11 @@ Continuously monitor your network speed and quality!
 $ wifi-watch
 PING ns.google.com (216.239.32.10): 56 data bytes
 
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-16:55 300 298 good   0.7%  250.83 ms
-17:00 300 296 good   1.3%  219.14 ms
-17:03 136  67 good   1.5%  676.17 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+16:55  300  298 good   0.7%  250.83 ms
+17:00  300  296 good   1.3%  219.14 ms
+17:03  136   67 good   1.5%  676.17 ms
 ```
 
 Run wifi-watch in a terminal so that you can easily check
@@ -58,9 +58,9 @@ sudo cp wifi-watch/wifi-watch /usr/local/bin
 The current output line shows counts for the current period.
 
 ```
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-17:03 136  67 good   1.5%  676.17 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+17:03  136   67 good   1.5%  676.17 ms
 ```
 
 - Current time.
@@ -80,16 +80,16 @@ I am working in a crowded coffee shop right now
 and perhaps a few of us are watching videos.
 
 ```
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-16:30 300 298 good   0.7%   63.84 ms
-16:35 300 300 good   0.0%   76.28 ms
-16:40 300 300 good   0.0%   74.45 ms
-16:45 300 297 good   1.0%  129.55 ms
-16:50 300 296 good   1.3%  233.94 ms
-16:55 300 298 good   0.7%  250.83 ms
-17:00 300 296 good   1.3%  219.14 ms
-17:03 136  67 good   1.5%  676.17 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+16:30  300  298 good   0.7%   63.84 ms
+16:35  300  300 good   0.0%   76.28 ms
+16:40  300  300 good   0.0%   74.45 ms
+16:45  300  297 good   1.0%  129.55 ms
+16:50  300  296 good   1.3%  233.94 ms
+16:55  300  298 good   0.7%  250.83 ms
+17:00  300  296 good   1.3%  219.14 ms
+17:03  136   67 good   1.5%  676.17 ms
 ```
 
 - History lines show the end time for each period.
@@ -97,7 +97,7 @@ Time  Tot Run Good Failed Round Trip
 - Packet loss percentage.
 - Average round trip time over the entire period.
 
-### Failure Modes
+### Failure Reporting
 
 #### Ping success or failure run length.
 
@@ -110,9 +110,9 @@ the runs will be short and switch modes often.
 Here we have lost our internet connection for the last 39 seconds.
 
 ```
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-17:59 207  39 fail  19.3%   62.55 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+17:59  207   39 fail  19.3%   62.55 ms
 ```
 
 #### DNS inaccessible.
@@ -123,11 +123,11 @@ this DNS lookup will fail and you will see the error message
 with the current time.
 
 ```
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-08:40 300  51 good  83.0%   68.65 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+08:40  300   51 good  83.0%   68.65 ms
 08:41 ping: cannot resolve ns.google.com: Unknown host
-08:42  62  17 fail  27.4%  187.30 ms
+08:42   62   17 fail  27.4%  187.30 ms
 ```
 
 #### Wifi login timeout.
@@ -149,12 +149,12 @@ replay and testing.
 wifi-watch --count 10 --debug-to ping1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-10:06  10  10 good   0.0%  127.41 ms
-10:06  10   3 good  70.0%   34.28 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+10:06   10   10 good   0.0%  127.41 ms
+10:06   10    3 good  70.0%   34.28 ms
 10:06 ping: cannot resolve ns.google.com: Unknown host
-10:06   5   1 fail  20.0%   55.16 ms^C
+10:06    5    1 fail  20.0%   55.16 ms^C
 ```
 
 The ping output file includes the timestamp for each line
@@ -165,12 +165,12 @@ identical appearing output.
 wifi-watch --debug-from ping1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
-Time  Tot Run Good Failed Round Trip
------ --- --- ---- ------ ----------
-10:06  10  10 good   0.0%  127.41 ms
-10:06  10   3 good  70.0%   34.28 ms
+Time  Ping  Run Good Failed Round Trip
+----- ---- ---- ---- ------ ----------
+10:06   10   10 good   0.0%  127.41 ms
+10:06   10    3 good  70.0%   34.28 ms
 10:06 ping: cannot resolve ns.google.com: Unknown host
-10:06   5   1 fail  20.0%   55.16 ms
+10:06    5    1 fail  20.0%   55.16 ms
 ```
 
 Although the --debug-from output should appear to be the same

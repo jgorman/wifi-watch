@@ -189,8 +189,8 @@ class WifiWatch
         unless @shown_header
           puts line # Show the destination name and ip.
           puts
-          puts "Time  Tot Run Good Failed Round Trip"
-          puts "----- --- --- ---- ------ ----------"
+          puts "Time  Ping  Run Good Failed Round Trip"
+          puts "----- ---- ---- ---- ------ ----------"
           @shown_header = true # Only show these once per wifi-watch.
         end
 
@@ -277,7 +277,7 @@ class WifiWatch
   def show_stats(time_line, total_count, totally_good,
                  current_mode, mode_count, ms)
     loss = ((total_count - totally_good) * 100.0) / total_count
-    line = sprintf("%s %3d %3d %s %5.1f%% %7.2f ms",
+    line = sprintf("%s %4d %4d %s %5.1f%% %7.2f ms",
                    format_time(time_line),
                    total_count, mode_count, current_mode, loss, ms)
     display_line(line)
