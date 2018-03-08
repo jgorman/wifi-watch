@@ -50,8 +50,9 @@ class WifiWatch
     else
 
       # Run ping multiple times.
-      cmd = "ping -c #{@options.count} #{@options.host}"
       while true
+        count = beautiful_times()
+        cmd = "ping -c #{count} #{@options.host}"
         stdin, stdout, pid = PTY.spawn( cmd )
         ping_period(stdin)    # Run one accounting period.
         Process.waitall()     # Soak up any zombie pings.
@@ -285,6 +286,40 @@ class WifiWatch
 
   def format_time(time)
     time.strftime('%H:%M')
+  end
+
+  # Make history lines pretty.
+  # We want the history minutes to be modulo the accounting minutes.
+  # Where possible we want to let the ping counts to be the same.
+  # Ping can drift forward or backward by a few seconds each run.
+  # Overall the drift is forward so when we need to make an adjustment
+  # we aim for 10 seconds into the next aligned minute.
+  def beautiful_times()
+    count = @options.count
+
+    # Is the target count minute aligned?
+    if count % 60 != 0
+      return count # Not minute aligned.
+    end
+
+    # Is the target count hour aligned?
+    minutes = count / 60
+    if 60 % minutes != 0 || minutes < 2
+      return count # Not hour aligned and multiple minutes.
+    end
+
+    # See if we are already suitable aligned right now.
+    now = Time.now
+    mm = now.min
+    ss = now.sec
+    if mm % minutes == 0 && 2 < ss && ss < 55
+      return count # Now is minute aligned and within minute drift limits.
+    end
+
+    # Target 10 seconds into the next aligned minute.
+    short_mm = minutes - (mm % minutes)
+    count = (short_mm * 60) + 10 - ss
+    return count
   end
 
   # Rewrite the current display line or save it for final debugging result.
