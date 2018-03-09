@@ -129,7 +129,7 @@ class WifiWatch
   # Run ping for one accounting period.
   def ping_period(stdin)
 
-    current_mode    = nil   # Are we currently good or failing?
+    current_mode    = nil   # Are we currently "good" or "fail"?
     mode_count      = 0     # For how long in a row?
     total_count     = 0     # Pings so far.
     totally_good    = 0     # Successful pings.
