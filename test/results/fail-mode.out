@@ -1,0 +1,6 @@
+PING ns.google.com (216.239.32.10): 56 data bytes
+
+Time  Ping  Run Mode Failed Round Trip
+----- ---- ---- ---- ------ ----------
+10:31   10   10 good   0.0%   80.47 ms
+10:31    8    5 fail  62.5%   32.70 ms

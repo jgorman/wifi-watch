@@ -178,12 +178,14 @@ as live ping monitoring there is a difference. Instead of emitting
 every intermediate count on the current line, only the final
 line is output. This helps keep test cases short and readable.
 
+You can run the current test suite with rake test.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/jgorman/wifi-watch.
 
-If you discover more failure modes capture the ping output
+If you discover a shortcoming capture the ping output
 using --debug-to and open an issue. Thanks!
 
 ## License

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+dir=`dirname $0`
+wifiwatch="$dir/../bin/wifi-watch"
+ping_logs="$dir/ping_logs"
+expected="$dir/expected"
+results="$dir/results"
+
+tests=0
+fail=0
+mkdir -p $results
+rm -f $results/*
+
+echo
+for test_path in $ping_logs/*.log; do
+  test_name=`basename $test_path .log`
+
+  echo -n "Running $test_name ... "
+  $wifiwatch --debug-from $test_path >$results/$test_name.out
+  tests=$(expr $tests + 1)
+
+  if cmp -s $expected/$test_name.out $results/$test_name.out; then
+    echo "Success!"
+  else
+    fail=$(expr $fail + 1)
+    echo "Failed!"
+    echo "diff $expected/$test_name.out $results/$test_name.out"
+    diff $expected/$test_name.out $results/$test_name.out
+    echo
+  fi
+
+done
+
+echo
+echo "$tests tests, $fail errors"
+echo
+
+[ "$fail" = 0 ]
+

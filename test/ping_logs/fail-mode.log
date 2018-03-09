@@ -1,0 +1,30 @@
+1520609460 PING ns.google.com (216.239.32.10): 56 data bytes
+1520609460 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=36.094 ms
+1520609461 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=28.811 ms
+1520609462 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=51.550 ms
+1520609463 64 bytes from 216.239.32.10: icmp_seq=3 ttl=44 time=43.548 ms
+1520609464 64 bytes from 216.239.32.10: icmp_seq=4 ttl=44 time=137.129 ms
+1520609465 64 bytes from 216.239.32.10: icmp_seq=5 ttl=44 time=55.223 ms
+1520609466 64 bytes from 216.239.32.10: icmp_seq=6 ttl=44 time=157.352 ms
+1520609467 64 bytes from 216.239.32.10: icmp_seq=7 ttl=44 time=32.181 ms
+1520609468 64 bytes from 216.239.32.10: icmp_seq=8 ttl=44 time=215.623 ms
+1520609469 64 bytes from 216.239.32.10: icmp_seq=9 ttl=44 time=47.139 ms
+1520609469 
+1520609469 --- ns.google.com ping statistics ---
+1520609469 10 packets transmitted, 10 packets received, 0.0% packet loss
+1520609469 round-trip min/avg/max/stddev = 28.811/80.465/215.623/61.891 ms
+END_OF_PING
+1520609469 PING ns.google.com (216.239.32.10): 56 data bytes
+1520609469 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=124.769 ms
+1520609470 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=121.649 ms
+1520609471 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=32.698 ms
+1520609473 ping: sendto: No route to host
+1520609473 Request timeout for icmp_seq 3
+1520609474 ping: sendto: No route to host
+1520609474 Request timeout for icmp_seq 4
+1520609475 ping: sendto: No route to host
+1520609475 Request timeout for icmp_seq 5
+1520609476 ping: sendto: No route to host
+1520609476 Request timeout for icmp_seq 6
+1520609477 ping: sendto: No route to host
+1520609477 Request timeout for icmp_seq 7

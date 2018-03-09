@@ -1,0 +1,24 @@
+1520610336 PING ns.google.com (216.239.32.10): 56 data bytes
+1520610336 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=45.126 ms
+1520610337 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=142.804 ms
+1520610338 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=34.206 ms
+1520610339 64 bytes from 216.239.32.10: icmp_seq=3 ttl=44 time=68.064 ms
+1520610340 Request timeout for icmp_seq 4
+1520610340 92 bytes from 10.128.128.128: Communication prohibited by filter
+1520610340 Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
+1520610340 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
+1520610341 Request timeout for icmp_seq 5
+1520610341 92 bytes from 10.128.128.128: Communication prohibited by filter
+1520610341 Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
+1520610341 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
+1520610342 Request timeout for icmp_seq 6
+1520610342 92 bytes from 10.128.128.128: Communication prohibited by filter
+1520610342 Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
+1520610342 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
+1520610343 Request timeout for icmp_seq 7
+1520610343 92 bytes from 10.128.128.128: Communication prohibited by filter
+1520610343 Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
+1520610343 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
+1520610344 64 bytes from 216.239.32.10: icmp_seq=8 ttl=44 time=184.792 ms
+1520610345 64 bytes from 216.239.32.10: icmp_seq=9 ttl=44 time=103.312 ms
+1520610346 64 bytes from 216.239.32.10: icmp_seq=10 ttl=44 time=61.582 ms

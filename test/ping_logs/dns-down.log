@@ -1,0 +1,129 @@
+1520606847 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606848 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606849 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606850 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606851 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606852 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606853 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606854 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606855 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606856 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606857 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606858 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606859 PING ns.google.com (216.239.32.10): 56 data bytes
+1520606859 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=36.533 ms
+1520606860 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=47.722 ms
+1520606861 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=35.427 ms
+1520606862 64 bytes from 216.239.32.10: icmp_seq=3 ttl=44 time=64.084 ms
+1520606863 64 bytes from 216.239.32.10: icmp_seq=4 ttl=44 time=69.815 ms
+1520606864 64 bytes from 216.239.32.10: icmp_seq=5 ttl=44 time=40.960 ms
+1520606865 64 bytes from 216.239.32.10: icmp_seq=6 ttl=44 time=106.540 ms
+1520606866 64 bytes from 216.239.32.10: icmp_seq=7 ttl=44 time=34.226 ms
+1520606867 64 bytes from 216.239.32.10: icmp_seq=8 ttl=44 time=39.930 ms
+1520606868 64 bytes from 216.239.32.10: icmp_seq=9 ttl=44 time=69.299 ms
+1520606868 
+1520606868 --- ns.google.com ping statistics ---
+1520606868 10 packets transmitted, 10 packets received, 0.0% packet loss
+1520606868 round-trip min/avg/max/stddev = 34.226/54.454/106.540/21.892 ms
+END_OF_PING
+1520606868 PING ns.google.com (216.239.32.10): 56 data bytes
+1520606868 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=35.391 ms
+1520606869 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=141.665 ms
+1520606870 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=131.141 ms
+1520606871 64 bytes from 216.239.32.10: icmp_seq=3 ttl=44 time=35.320 ms
+1520606872 64 bytes from 216.239.32.10: icmp_seq=4 ttl=44 time=39.757 ms
+1520606873 ping: sendto: No route to host
+1520606874 ping: sendto: No route to host
+1520606874 Request timeout for icmp_seq 5
+1520606875 ping: sendto: No route to host
+1520606875 Request timeout for icmp_seq 6
+1520606876 ping: sendto: No route to host
+1520606876 Request timeout for icmp_seq 7
+1520606877 ping: sendto: No route to host
+1520606877 Request timeout for icmp_seq 8
+1520606879 
+1520606879 --- ns.google.com ping statistics ---
+1520606879 10 packets transmitted, 5 packets received, 50.0% packet loss
+1520606879 round-trip min/avg/max/stddev = 35.320/76.655/141.665/48.924 ms
+END_OF_PING
+1520606879 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606880 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606881 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606882 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606883 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606884 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606885 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606886 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606887 PING ns.google.com (216.239.32.10): 56 data bytes
+1520606887 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=40.028 ms
+1520606888 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=44.796 ms
+1520606889 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=43.484 ms
+1520606890 64 bytes from 216.239.32.10: icmp_seq=3 ttl=44 time=238.342 ms
+1520606891 64 bytes from 216.239.32.10: icmp_seq=4 ttl=44 time=161.573 ms
+1520606892 64 bytes from 216.239.32.10: icmp_seq=5 ttl=44 time=57.327 ms
+1520606893 64 bytes from 216.239.32.10: icmp_seq=6 ttl=44 time=36.289 ms
+1520606894 64 bytes from 216.239.32.10: icmp_seq=7 ttl=44 time=31.354 ms
+1520606895 64 bytes from 216.239.32.10: icmp_seq=8 ttl=44 time=32.630 ms
+1520606896 64 bytes from 216.239.32.10: icmp_seq=9 ttl=44 time=34.819 ms
+1520606896 
+1520606896 --- ns.google.com ping statistics ---
+1520606896 10 packets transmitted, 10 packets received, 0.0% packet loss
+1520606896 round-trip min/avg/max/stddev = 31.354/72.064/238.342/66.591 ms
+END_OF_PING
+1520606896 PING ns.google.com (216.239.32.10): 56 data bytes
+1520606896 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=38.382 ms
+1520606897 64 bytes from 216.239.32.10: icmp_seq=1 ttl=44 time=120.228 ms
+1520606898 64 bytes from 216.239.32.10: icmp_seq=2 ttl=44 time=87.912 ms
+1520606899 ping: sendto: No route to host
+1520606900 ping: sendto: No route to host
+1520606900 Request timeout for icmp_seq 3
+1520606901 ping: sendto: No route to host
+1520606901 Request timeout for icmp_seq 4
+1520606902 ping: sendto: No route to host
+1520606902 Request timeout for icmp_seq 5
+1520606903 ping: sendto: No route to host
+1520606903 Request timeout for icmp_seq 6
+1520606904 ping: sendto: No route to host
+1520606904 Request timeout for icmp_seq 7
+1520606905 ping: sendto: No route to host
+1520606905 Request timeout for icmp_seq 8
+1520606907 
+1520606907 --- ns.google.com ping statistics ---
+1520606907 10 packets transmitted, 3 packets received, 70.0% packet loss
+1520606907 round-trip min/avg/max/stddev = 38.382/82.174/120.228/33.659 ms
+END_OF_PING
+1520606907 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606908 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606909 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606910 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606911 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606912 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606913 ping: cannot resolve ns.google.com: Unknown host
+END_OF_PING
+1520606914 ping: cannot resolve ns.google.com: Unknown host
