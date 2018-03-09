@@ -1,0 +1,9 @@
+17:42:00 Waiting for dns lookup of ns.google.com ...
+PING ns.google.com (216.239.32.10): 56 data bytes
+
+Time  Ping  Run Mode Failed Round Trip
+----- ---- ---- ---- ------ ----------
+17:42   10    6 good  40.0%   76.50 ms
+17:42:18 Waiting for dns lookup of ns.google.com ...
+17:42   10    4 good  60.0%   76.68 ms
+17:42:33 Waiting for dns lookup of ns.google.com ...
