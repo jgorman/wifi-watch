@@ -46,6 +46,9 @@ class WifiWatch
       until @debug_from.eof?
         ping_period(@debug_from) # Reads up to next "END_OF_PING" line.
       end
+      if @dns_failing
+        commit_line() # Show that we ended up in dns failure mode.
+      end
 
     else
 
@@ -133,8 +136,8 @@ class WifiWatch
     ping_ms         = 0.0   # Latest successful ping time in milliseconds.
     packets_line    = ''    # Ping packets received summary line.
     round_trip_line = ''    # Ping round-trip milliseconds summary line.
-    filter_line     = nil   # Special wifi login timeout message.
-    time_line       = nil   # Latest line timestamp.
+    filter_mode     = false # Wifi login filter is active.
+    line_time       = nil   # Latest line timestamp.
 
     # Process each line of ping output.
     stdin.each do |line|
@@ -149,21 +152,21 @@ class WifiWatch
 
         # Simulate the past by loading the effective time for this line.
         time, line = line.split(" ", 2)
-        time_line = Time.at(time.to_i)
+        line_time = Time.at(time.to_i)
       else
-        time_line = Time.now
+        line_time = Time.now
       end
 
       if @debug_to
         # Capture this ping output line with the timestamp for later debugging.
-        @debug_to.puts "#{time_line.to_i} #{line}"
+        @debug_to.puts "#{line_time.to_i} #{line}"
         @debug_to.flush
       end
 
       # When DNS is down we cannot even find the host ip to ping.
       if line =~ /cannot resolve/
         # ping: cannot resolve ns.google.com: Unknown host
-        display_line("#{format_time(time_line)} #{line}")
+        time_line(line_time, line)
 
         # DNS can fail quickly so we wait a second before trying again.
         sleep 1 unless @debug_from
@@ -205,6 +208,10 @@ class WifiWatch
           #
           ping_ms = $1.to_f
           new_mode  = 'good'
+          if filter_mode
+            commit_line() # Keep the filter message line.
+            filter_mode = false
+          end
 
         else
           #
@@ -217,11 +224,11 @@ class WifiWatch
           # Vr HL TOS Len ID Flg off TTL Pro cks Src Dst
           # 4 5 00 5400 6dea 0 0000 40 01 21dd 10.57.228.249 104.27.147.148
           #
-          unless filter_line
-            commit_line()
-            puts filter_line
-            filter_line = line  # Show the message once.
+          unless filter_mode
+            commit_line() # Keep the last unfiltered status line.
+            filter_mode = true
           end
+          time_line(line_time, line)
         end
 
       elsif line =~ /timeout/
@@ -246,8 +253,10 @@ class WifiWatch
         mode_count    += 1
         totally_good  += 1 if current_mode == 'good'
         total_count   += 1
-        show_stats(time_line, total_count, totally_good,
-                   current_mode, mode_count, ping_ms)
+        unless filter_mode
+          show_stats(line_time, total_count, totally_good,
+                    current_mode, mode_count, ping_ms)
+        end
       end
 
     end
@@ -257,9 +266,6 @@ class WifiWatch
       @debug_to.puts "END_OF_PING"
       @debug_to.flush
     end
-    if @dns_failing
-      return
-    end
 
     # Final summary line.
     if packets_line =~ /(\d+) packets transmitted, (\d+) packets received/
@@ -268,20 +274,22 @@ class WifiWatch
         if round_trip_line =~ / (\S+) ms/
           avg_ms = $1.split('/')[1].to_f  # Extract the average time.
         end
-        show_stats(time_line, total_count, totally_good,
+        show_stats(line_time, total_count, totally_good,
                  'good', totally_good, avg_ms)
     end
-    commit_line() # Leave this summary line as history.
+
+    unless @dns_failing
+      commit_line() # Leave this summary line as history.
+    end
   end
 
   # Show the statistics.
-  def show_stats(time_line, total_count, totally_good,
+  def show_stats(line_time, total_count, totally_good,
                  current_mode, mode_count, ms)
     loss = ((total_count - totally_good) * 100.0) / total_count
-    line = sprintf("%s %4d %4d %s %5.1f%% %7.2f ms",
-                   format_time(time_line),
+    line = sprintf("%4d %4d %s %5.1f%% %7.2f ms",
                    total_count, mode_count, current_mode, loss, ms)
-    display_line(line)
+    time_line(line_time, line)
   end
 
   def format_time(time)
@@ -322,9 +330,13 @@ class WifiWatch
     return count
   end
 
+  def time_line(time, line)
+    line = "#{format_time(time)} #{line}"
+    display_line(line)
+  end
+
   # Rewrite the current display line or save it for final debugging result.
   def display_line(line)
-    # In debug mode we only want the final line value to show.
     @display_line = line
     unless @debug_from
       # Display this current line.
