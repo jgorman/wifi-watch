@@ -141,9 +141,9 @@ class WifiWatch
     first_byte      = nil   # DNS lookup complete read test byte.
 
     # Long DNS lookups can effectively freeze ping for a while.
+    # To reproduce: turn VPN off and then on, then turn WiFi off.
     # This logic is impractical to simulate in a meaningful way
-    # so there is no regression testing support for this feature.
-    # To reproduce: turn VPN on, then turn WiFi off.
+    # so we just pass the messages on for later debugging display.
     waiting_start = Time.now
     last_notified = waiting_start
     until first_byte
@@ -153,9 +153,13 @@ class WifiWatch
         now = Time.now
         if now - last_notified >= 1
           hhmmss_line(now, "Waiting for dns lookup of #{@options.host} ...")
+          if @debug_to
+            @debug_to.puts "#{now.to_i} DNS_LOOKUP #{@display_line}"
+            @debug_to.flush
+          end
           last_notified = now
         end
-        sleep 0.2
+        sleep 0.2 # Be nice to the cpu.
       end
     end
     if last_notified > waiting_start
@@ -172,12 +176,10 @@ class WifiWatch
       end
 
       if @debug_from
-
         # Read from the debugging source file up to the end of this ping run.
         if line == "END_OF_PING"
           break # End this ping accounting period run.
         end
-
         # Simulate the past by loading the effective time for this line.
         time, line = line.split(" ", 2)
         line_time = Time.at(time.to_i)
@@ -191,19 +193,18 @@ class WifiWatch
         @debug_to.flush
       end
 
-      # When DNS is down we cannot even find the host ip to ping.
+      # DNS failure modes.
       if line =~ /cannot resolve/
         # ping: cannot resolve ns.google.com: Unknown host
         hhmmss_line(line_time, line)
-
-        # DNS can fail quickly so we wait a second before trying again.
-        sleep 1 unless @debug_from
+        sleep 1 unless @debug_from # Speed up testing.
         @dns_failing = true
-        next # In debug mode we need to swallow the END_OF_PING line.
-      end
-
-      # If DNS was previously failing, pop to a fresh line.
-      if @dns_failing
+      elsif line =~ /DNS_LOOKUP (.*)/
+        # Waiting for dns lookup of ns.google.com ...
+        display_line($1)
+        @dns_failing = true
+      elsif @dns_failing
+        # If DNS was previously failing, pop to a fresh line.
         commit_line()
         @dns_failing = false
       end
@@ -227,7 +228,6 @@ class WifiWatch
         end
 
       elsif line =~ /bytes from/
-
         if line =~ /time=(\S+)/
           #
           # Success! Record the round trip time.
@@ -240,7 +240,6 @@ class WifiWatch
             commit_line() # Keep the filter message line.
             filter_mode = false
           end
-
         else
           #
           # Here the wifi login has timed out and is blocking packets.

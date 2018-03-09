@@ -115,7 +115,7 @@ Time  Ping  Run Mode Failed Round Trip
 17:59  207   39 fail  19.3%   62.55 ms
 ```
 
-#### DNS lookup taking a long time.
+#### Slow DNS lookup.
 
 At the beginning of an accounting period ping does a DNS lookup
 to find your target host ip address. Sometimes this can take
@@ -130,12 +130,10 @@ Time  Ping  Run Mode Failed Round Trip
 14:39   10   10 good   0.0%   49.52 ms
 ```
 
-#### DNS inaccessible.
+#### Failing DNS lookup.
 
-At the beginning of an accounting period ping does a DNS lookup
-to find your target host ip address. When the network is not
-connected this DNS lookup will eventually fail and you will
-see the error message with the current time.
+When the network is not connected at the beginning of an
+accounting period the host DNS lookup will fail to resolve.
 
 ```
 Time  Ping  Run Mode Failed Round Trip
@@ -161,7 +159,7 @@ It is easy to capture the raw ping output to a file for later
 replay and testing.
 
 ```
-wifi-watch --count 10 --debug-to ping1.log
+wifi-watch --count 10 --debug-to test1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
 Time  Ping  Run Mode Failed Round Trip
@@ -177,7 +175,7 @@ so replaying the file later on should result in
 identical appearing output.
 
 ```
-wifi-watch --debug-from ping1.log
+wifi-watch --debug-from test1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
 Time  Ping  Run Mode Failed Round Trip
@@ -191,7 +189,7 @@ Time  Ping  Run Mode Failed Round Trip
 Although the --debug-from output should appear to be the same
 as live ping monitoring there is a difference. Instead of emitting
 every intermediate count on the current line, only the final
-line is output. This helps keep test cases short and readable.
+line is printed. This helps keep test cases short and readable.
 
 You can run the current test suite with rake test.
 
