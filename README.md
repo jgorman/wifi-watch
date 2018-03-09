@@ -134,8 +134,8 @@ Time  Ping  Run Mode Failed Round Trip
 
 At the beginning of an accounting period ping does a DNS lookup
 to find your target host ip address. When the network is not
-connected this DNS lookup will fail and you will see the
-error message with the current time.
+connected this DNS lookup will eventually fail and you will
+see the error message with the current time.
 
 ```
 Time  Ping  Run Mode Failed Round Trip

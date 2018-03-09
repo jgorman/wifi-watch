@@ -141,7 +141,9 @@ class WifiWatch
     first_byte      = nil   # DNS lookup complete read test byte.
 
     # Long DNS lookups can effectively freeze ping for a while.
-    # We let the user know.
+    # This logic is impractical to simulate in a meaningful way
+    # so there is no regression testing support for this feature.
+    # To reproduce: turn VPN on, then turn WiFi off.
     waiting_start = Time.now
     last_notified = waiting_start
     until first_byte
@@ -153,7 +155,7 @@ class WifiWatch
           hhmmss_line(now, "Waiting for dns lookup of #{@options.host} ...")
           last_notified = now
         end
-        sleep 0.1
+        sleep 0.2
       end
     end
     if last_notified > waiting_start
@@ -172,7 +174,7 @@ class WifiWatch
       if @debug_from
 
         # Read from the debugging source file up to the end of this ping run.
-        if (line == "END_OF_PING")
+        if line == "END_OF_PING"
           break # End this ping accounting period run.
         end
 
