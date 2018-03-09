@@ -78,21 +78,21 @@ class WifiWatch
       opt.banner = "Usage: #{Program} [OPTIONS]"
       opt.separator ""
 
-      opt.on("-h", "--host HOST", "Host to ping [#{options.host}].") do |host|
+      opt.on("-h", "--host host", "Host to ping [#{options.host}].") do |host|
         options.host = host
       end
 
-      opt.on("-c", "--count SECONDS", Integer,
+      opt.on("-c", "--count seconds", Integer,
              "Accounting period [#{options.count}].") do |count|
         options.count = count
       end
 
-      opt.on("--debug-to FILE",
+      opt.on("--debug-to file",
              "Write ping output to a file for debugging.") do |debug_to|
         options.debug_to = debug_to
       end
 
-      opt.on("--debug-from FILE",
+      opt.on("--debug-from file",
              "Read ping input from a file for testing.") do |debug_from|
         options.debug_from = debug_from
       end
@@ -312,7 +312,7 @@ class WifiWatch
     now = Time.now
     mm = now.min
     ss = now.sec
-    if mm % minutes == 0 && 2 < ss && ss < 55
+    if mm % minutes == 0 && 2 < ss && ss < 50
       return count # Now is minute aligned and within minute drift limits.
     end
 
