@@ -291,8 +291,8 @@ class WifiWatch
   # Make history lines pretty.
   # We want the history minutes to be modulo the accounting minutes.
   # Where possible we want to let the ping counts to be the same.
-  # Ping can drift forward or backward by a few seconds each run.
-  # Overall the drift is forward so when we need to make an adjustment
+  # Ping can drift backward by one second and forward by a few seconds each run.
+  # Overall the drift is usually forward so when we need to make an adjustment
   # we aim for 10 seconds into the next aligned minute.
   def beautiful_times()
     count = @options.count
@@ -312,7 +312,7 @@ class WifiWatch
     now = Time.now
     mm = now.min
     ss = now.sec
-    if mm % minutes == 0 && 2 < ss && ss < 50
+    if mm % minutes == 0 && 1 <= ss && ss <= 50
       return count # Now is minute aligned and within minute drift limits.
     end
 
