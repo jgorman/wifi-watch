@@ -77,7 +77,6 @@ class WifiWatch
     options.count = Default_count
 
     opt_parser = OptionParser.new do |opt|
-
       opt.banner = "Usage: #{Program} [OPTIONS]"
       opt.separator ""
 
@@ -106,9 +105,14 @@ class WifiWatch
       end
 
       opt.on("--help", "This message.") do
+        puts
         puts opt_parser
+        puts
         exit
       end
+
+      opt.separator ""
+      opt.separator "Documentation at https://github.com/jgorman/wifi-watch"
 
     end
 
