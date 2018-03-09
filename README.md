@@ -115,18 +115,33 @@ Time  Ping  Run Mode Failed Round Trip
 17:59  207   39 fail  19.3%   62.55 ms
 ```
 
+#### DNS lookup taking a long time.
+
+At the beginning of an accounting period ping does a DNS lookup
+to find your target host ip address. Sometimes this can take
+quite a while to either succeed or fail. If the wait is more
+than one second you will see a status message.
+
+```
+Time  Ping  Run Mode Failed Round Trip
+----- ---- ---- ---- ------ ----------
+14:38   10    4 good  60.0%   35.69 ms
+14:38:52 Waiting for dns lookup of ns.google.com ...
+14:39   10   10 good   0.0%   49.52 ms
+```
+
 #### DNS inaccessible.
 
 At the beginning of an accounting period ping does a DNS lookup
-to find your target host ip address. When the network is not connected
-this DNS lookup will fail and you will see the error message
-with the current time.
+to find your target host ip address. When the network is not
+connected this DNS lookup will fail and you will see the
+error message with the current time.
 
 ```
 Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 08:40  300   51 good  83.0%   68.65 ms
-08:41 ping: cannot resolve ns.google.com: Unknown host
+08:41:06 ping: cannot resolve ns.google.com: Unknown host
 08:42   62   17 fail  27.4%  187.30 ms
 ```
 
@@ -137,7 +152,7 @@ need to login again. Wifi-watch will let you know by showing the
 response message.
 
 ```
-92 bytes from 10.128.128.128: Communication prohibited by filter
+10:45:43 92 bytes from 10.128.128.128: Communication prohibited by filter
 ```
 
 ## Testing and Debugging
@@ -153,7 +168,7 @@ Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 10:06   10   10 good   0.0%  127.41 ms
 10:06   10    3 good  70.0%   34.28 ms
-10:06 ping: cannot resolve ns.google.com: Unknown host
+10:06:34 ping: cannot resolve ns.google.com: Unknown host
 10:06    5    1 fail  20.0%   55.16 ms^C
 ```
 
@@ -169,7 +184,7 @@ Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 10:06   10   10 good   0.0%  127.41 ms
 10:06   10    3 good  70.0%   34.28 ms
-10:06 ping: cannot resolve ns.google.com: Unknown host
+10:06:34 ping: cannot resolve ns.google.com: Unknown host
 10:06    5    1 fail  20.0%   55.16 ms
 ```
 

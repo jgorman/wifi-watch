@@ -32,7 +32,7 @@ class WifiWatch
 
     if @options.debug_from
 
-      # We are simulating ping output from a captured --debug-to file.
+      # Debug mode simulates ping output from a captured --debug-to file.
       begin
         @debug_from = File.open(@options.debug_from, "r")
       rescue => e
@@ -138,11 +138,37 @@ class WifiWatch
     round_trip_line = ''    # Ping round-trip milliseconds summary line.
     filter_mode     = false # Wifi login filter is active.
     line_time       = nil   # Latest line timestamp.
+    first_byte      = nil   # DNS lookup complete read test byte.
+
+    # Long DNS lookups can effectively freeze ping for a while.
+    # We let the user know.
+    waiting_start = Time.now
+    last_notified = waiting_start
+    until first_byte
+      begin
+        first_byte = stdin.read_nonblock(1)
+      rescue IO::EAGAINWaitReadable
+        now = Time.now
+        if now - last_notified >= 1
+          hhmmss_line(now, "Waiting for dns lookup of #{@options.host} ...")
+          last_notified = now
+        end
+        sleep 0.1
+      end
+    end
+    if last_notified > waiting_start
+      commit_line()
+    end
 
     # Process each line of ping output.
     stdin.each do |line|
 
       line.chomp!
+      if first_byte
+        line = first_byte + line
+        first_byte = nil
+      end
+
       if @debug_from
 
         # Read from the debugging source file up to the end of this ping run.
@@ -166,7 +192,7 @@ class WifiWatch
       # When DNS is down we cannot even find the host ip to ping.
       if line =~ /cannot resolve/
         # ping: cannot resolve ns.google.com: Unknown host
-        time_line(line_time, line)
+        hhmmss_line(line_time, line)
 
         # DNS can fail quickly so we wait a second before trying again.
         sleep 1 unless @debug_from
@@ -228,7 +254,7 @@ class WifiWatch
             commit_line() # Keep the last unfiltered status line.
             filter_mode = true
           end
-          time_line(line_time, line)
+          hhmmss_line(line_time, line)
         end
 
       elsif line =~ /timeout/
@@ -289,11 +315,7 @@ class WifiWatch
     loss = ((total_count - totally_good) * 100.0) / total_count
     line = sprintf("%4d %4d %s %5.1f%% %7.2f ms",
                    total_count, mode_count, current_mode, loss, ms)
-    time_line(line_time, line)
-  end
-
-  def format_time(time)
-    time.strftime('%H:%M')
+    hhmm_line(line_time, line)
   end
 
   # Make history lines pretty.
@@ -330,8 +352,13 @@ class WifiWatch
     return count
   end
 
-  def time_line(time, line)
-    line = "#{format_time(time)} #{line}"
+  def hhmm_line(time, line)
+    line = "#{time.strftime('%H:%M')} #{line}"
+    display_line(line)
+  end
+
+  def hhmmss_line(time, line)
+    line = "#{time.strftime('%H:%M:%S')} #{line}"
     display_line(line)
   end
 

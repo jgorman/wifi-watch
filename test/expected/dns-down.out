@@ -1,11 +1,11 @@
-09:47 ping: cannot resolve ns.google.com: Unknown host
+09:47:38 ping: cannot resolve ns.google.com: Unknown host
 PING ns.google.com (216.239.32.10): 56 data bytes
 
 Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------
 09:47   10   10 good   0.0%   54.45 ms
 09:47   10    5 good  50.0%   76.66 ms
-09:48 ping: cannot resolve ns.google.com: Unknown host
+09:48:06 ping: cannot resolve ns.google.com: Unknown host
 09:48   10   10 good   0.0%   72.06 ms
 09:48   10    3 good  70.0%   82.17 ms
-09:48 ping: cannot resolve ns.google.com: Unknown host
+09:48:34 ping: cannot resolve ns.google.com: Unknown host
