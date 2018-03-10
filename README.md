@@ -33,9 +33,15 @@ on a moment to moment basis.
 
 ### Installation
 
+You can install the gem from rubygems.org
+
+```
+gem install wifi-watch
+```
+
 wifi-watch is a stand alone ruby script which will run with
-any ruby version and has no dependencies. Clone the repository
-and copy wifi-watch into your path.
+any ruby version and has no dependencies. You can clone
+the repository and copy wifi-watch into your path.
 
 ```
 git clone https://github.com/jgorman/wifi-watch.git
