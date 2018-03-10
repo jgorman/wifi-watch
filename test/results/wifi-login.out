@@ -1,7 +1,0 @@
-PING ns.google.com (216.239.32.10): 56 data bytes
-
-Time  Ping  Run Mode Failed Round Trip
------ ---- ---- ---- ------ ----------
-10:45    5    1 fail  20.0%   68.06 ms
-10:45:43 92 bytes from 10.128.128.128: Communication prohibited by filter
-10:45   11    3 good  36.4%   61.58 ms
