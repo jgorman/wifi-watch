@@ -40,12 +40,20 @@ gem install wifi-watch
 ```
 
 wifi-watch is a stand alone ruby script which will run with
-any ruby version and has no dependencies. You can clone
+any ruby version and has no dependencies. You can git clone
 the repository and copy wifi-watch into your path.
 
 ```
 git clone https://github.com/jgorman/wifi-watch.git
 sudo cp wifi-watch/bin/wifi-watch /usr/local/bin
+```
+
+You can use curl or wget to download the script.
+
+```
+curl https://raw.githubusercontent.com/jgorman/wifi-watch/master/bin/wifi-watch >wifi-watch
+chmod +x wifi-watch
+sudo mv wifi-watch /usr/local/bin
 ```
 
 ### Usage: wifi-watch [options]

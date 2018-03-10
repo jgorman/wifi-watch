@@ -86,6 +86,7 @@ class WifiWatch
 
       opt.on("-c", "--count seconds", Integer,
              "Accounting period [#{options.count}].") do |count|
+        raise "--count must be positive" unless count > 0
         options.count = count
       end
 
@@ -339,11 +340,11 @@ class WifiWatch
 
     # Is the target count hour aligned?
     minutes = count / 60
-    if 60 % minutes != 0 || minutes < 2
-      return count # Not hour aligned and multiple minutes.
+    if 60 % minutes != 0
+      return count # Not hour aligned.
     end
 
-    # See if we are already suitable aligned right now.
+    # See if we are already suitably aligned right now.
     now = Time.now
     mm = now.min
     ss = now.sec
