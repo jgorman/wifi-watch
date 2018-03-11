@@ -165,6 +165,8 @@ class WifiWatch
           last_notified = now
         end
         sleep 0.2 # Be nice to the cpu.
+      rescue
+        break	# Some systems throw an error at eof.
       end
     end
     if last_notified > waiting_start
@@ -172,7 +174,13 @@ class WifiWatch
     end
 
     # Process each line of ping output.
-    stdin.each do |line|
+    while true
+      begin
+        line = stdin.gets
+      rescue
+        break	# Some systems throw an error at eof.
+      end
+      break unless line
 
       line.chomp!
       if first_byte
