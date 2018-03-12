@@ -60,7 +60,8 @@ sudo mv wifi-watch /usr/local/bin
 
 ```
 -h, --host host         Host to ping [ns.google.com].
--c, --count seconds     Accounting period [600].
+-c, --count seconds     Accounting period length [600 seconds].
+-p, --periods periods   Accounting periods to run [infinite].
     --debug-to file     Write ping output to a file for debugging.
     --debug-from file   Read ping input from a file for testing.
 -v, --version           Version.

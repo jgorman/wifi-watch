@@ -53,12 +53,19 @@ class WifiWatch
     else
 
       # Run ping multiple times.
+      periods = 0
       while true
         count = beautiful_times()
         cmd = "ping -c #{count} #{@options.host}"
         stdin, stdout, pid = PTY.spawn( cmd )
         ping_period(stdin)    # Run one accounting period.
         Process.waitall()     # Soak up any zombie pings.
+        if @options.periods > 0
+          periods += 1
+          if periods >= @options.periods
+            break
+          end
+        end
       end
 
     end
@@ -72,9 +79,10 @@ class WifiWatch
   end
 
   def get_options
-    options       = OpenStruct.new
-    options.host  = Default_host
-    options.count = Default_count
+    options         = OpenStruct.new
+    options.host    = Default_host
+    options.count   = Default_count
+    options.periods = 0
 
     opt_parser = OptionParser.new do |opt|
       opt.banner = "Usage: #{Program} [OPTIONS]"
@@ -85,9 +93,14 @@ class WifiWatch
       end
 
       opt.on("-c", "--count seconds", Integer,
-             "Accounting period [#{options.count}].") do |count|
+             "Accounting period length [#{options.count} seconds].") do |count|
         raise "--count must be positive" unless count > 0
         options.count = count
+      end
+
+      opt.on("-p", "--periods periods", Integer,
+             "Accounting periods to run [infinite].") do |periods|
+        options.periods = periods
       end
 
       opt.on("--debug-to file",
