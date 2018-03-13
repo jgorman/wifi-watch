@@ -34,7 +34,11 @@ class WifiWatch
 
       # Debug mode simulates ping output from a captured --debug-to file.
       begin
-        @debug_from = File.open(@options.debug_from, "r")
+        if @options.debug_from == "-"
+          @debug_from = STDIN
+        else
+          @debug_from = File.open(@options.debug_from, "r")
+        end
       rescue => e
         puts
         puts "debug_from=#{@options.debug_from}: #{e}"
@@ -109,7 +113,7 @@ class WifiWatch
       end
 
       opt.on("--debug-from file",
-             "Read ping input from a file for testing.") do |debug_from|
+             "Read ping input from a file or '-' stdin.") do |debug_from|
         options.debug_from = debug_from
       end
 
