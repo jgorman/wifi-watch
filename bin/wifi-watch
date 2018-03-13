@@ -15,40 +15,40 @@ class WifiWatch
     @shown_header = false # Have we shown the column headers yet?
     @dns_failing  = false # Are DNS lookups currently failing?
     @display_line = nil   # The current display line.
-    @debug_to     = nil   # Save timestamped ping output here.
-    @debug_from   = nil   # Read timestamped ping input here.
+    @ping_to      = nil   # Save timestamped ping output here.
+    @ping_from    = nil   # Read timestamped ping input here.
     @options      = get_options()
 
-    if @options.debug_to
+    if @options.ping_to
       begin
-        @debug_to = File.open(@options.debug_to, "w")
+        @ping_to = File.open(@options.ping_to, "w")
       rescue => e
         puts
-        puts "debug_to=#{@options.debug_to}: #{e}"
+        puts "ping_to=#{@options.ping_to}: #{e}"
         puts
         exit
       end
     end
 
-    if @options.debug_from
+    if @options.ping_from
 
-      # Debug mode simulates ping output from a captured --debug-to file.
+      # Debug mode simulates ping output from a captured --ping-to file.
       begin
-        if @options.debug_from == "-"
-          @debug_from = STDIN
+        if @options.ping_from == "-"
+          @ping_from = STDIN
         else
-          @debug_from = File.open(@options.debug_from, "r")
+          @ping_from = File.open(@options.ping_from, "r")
         end
       rescue => e
         puts
-        puts "debug_from=#{@options.debug_from}: #{e}"
+        puts "ping_from=#{@options.ping_from}: #{e}"
         puts
         exit
       end
 
       # Call ping_period() for each ping run section.
-      until @debug_from.eof?
-        ping_period(@debug_from) # Reads up to next "END_OF_PING" line.
+      until @ping_from.eof?
+        ping_period(@ping_from) # Reads up to next "END_OF_PING" line.
       end
       if @dns_failing
         commit_line() # Show that we ended up in dns failure mode.
@@ -77,8 +77,8 @@ class WifiWatch
   rescue Interrupt
     commit_line()
   ensure
-    if @debug_to
-      @debug_to.close
+    if @ping_to
+      @ping_to.close
     end
   end
 
@@ -107,14 +107,14 @@ class WifiWatch
         options.periods = periods
       end
 
-      opt.on("--debug-to file",
-             "Write ping output to a file for debugging.") do |debug_to|
-        options.debug_to = debug_to
+      opt.on("--ping-to file",
+             "Write ping output to a file for debugging.") do |ping_to|
+        options.ping_to = ping_to
       end
 
-      opt.on("--debug-from file",
-             "Read ping input from a file or '-' stdin.") do |debug_from|
-        options.debug_from = debug_from
+      opt.on("--ping-from file",
+             "Read ping input from a file ('-' for stdin).") do |ping_from|
+        options.ping_from = ping_from
       end
 
       opt.on("-v", "--version", "Version.") do
@@ -175,9 +175,9 @@ class WifiWatch
         now = Time.now
         if now - last_notified >= 1
           hhmmss_line(now, "Waiting for dns lookup of #{@options.host} ...")
-          if @debug_to
-            @debug_to.puts "#{now.to_i} DNS_LOOKUP #{@display_line}"
-            @debug_to.flush
+          if @ping_to
+            @ping_to.puts "#{now.to_i} DNS_LOOKUP #{@display_line}"
+            @ping_to.flush
           end
           last_notified = now
         end
@@ -205,7 +205,7 @@ class WifiWatch
         first_byte = nil
       end
 
-      if @debug_from
+      if @ping_from
         # Read from the debugging source file up to the end of this ping run.
         if line == "END_OF_PING"
           break # End this ping accounting period run.
@@ -217,17 +217,17 @@ class WifiWatch
         line_time = Time.now
       end
 
-      if @debug_to
+      if @ping_to
         # Capture this ping output line with the timestamp for later debugging.
-        @debug_to.puts "#{line_time.to_i} #{line}"
-        @debug_to.flush
+        @ping_to.puts "#{line_time.to_i} #{line}"
+        @ping_to.flush
       end
 
       # DNS failure modes.
       if line =~ /cannot resolve/
         # ping: cannot resolve ns.google.com: Unknown host
         hhmmss_line(line_time, line)
-        sleep 1 unless @debug_from # Speed up testing.
+        sleep 1 unless @ping_from # Speed up testing.
         @dns_failing = true
       elsif line =~ /DNS_LOOKUP (.*)/
         # Waiting for dns lookup of ns.google.com ...
@@ -318,10 +318,10 @@ class WifiWatch
 
     end
 
-    if @debug_to
+    if @ping_to
       # Insert a ping run separator line into the debugging file.
-      @debug_to.puts "END_OF_PING"
-      @debug_to.flush
+      @ping_to.puts "END_OF_PING"
+      @ping_to.flush
     end
 
     # Final summary line.
@@ -396,7 +396,7 @@ class WifiWatch
   # Rewrite the current display line or save it for final debugging result.
   def display_line(line)
     @display_line = line
-    unless @debug_from
+    unless @ping_from
       # Display this current line.
       STDOUT.write "\r"   # Move to the start of this line.
       STDOUT.write line   # Write over it.
@@ -406,7 +406,7 @@ class WifiWatch
   # If there is a current display line, commit it to history.
   def commit_line()
     if @display_line
-      if @debug_from
+      if @ping_from
         # Debug mode show final line value as history.
         puts @display_line
       else

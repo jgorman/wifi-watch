@@ -62,8 +62,8 @@ sudo mv wifi-watch /usr/local/bin
 -h, --host host         Host to ping [ns.google.com].
 -c, --count seconds     Accounting period length [600 seconds].
 -p, --periods periods   Accounting periods to run [infinite].
-    --debug-to file     Write ping output to a file for debugging.
-    --debug-from file   Read ping input from a file for testing.
+    --ping-to file      Write ping output to a file for debugging.
+    --ping-from file    Read ping input from a file ('-' for stdin).
 -v, --version           Version.
     --help              This message.
 ```
@@ -174,7 +174,7 @@ It is easy to capture the raw ping output to a file for later
 replay and testing.
 
 ```
-wifi-watch --count 10 --debug-to test1.log
+wifi-watch --count 10 --ping-to test1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
 Time  Ping  Run Mode Failed Round Trip
@@ -190,7 +190,7 @@ so replaying the file later on should result in
 identical appearing output.
 
 ```
-wifi-watch --debug-from test1.log
+wifi-watch --ping-from test1.log
 PING ns.google.com (216.239.32.10): 56 data bytes
 
 Time  Ping  Run Mode Failed Round Trip
@@ -201,7 +201,7 @@ Time  Ping  Run Mode Failed Round Trip
 10:06    5    1 fail  20.0%   55.16 ms
 ```
 
-Although the --debug-from output should appear to be the same
+Although the --ping-from output should appear to be the same
 as live ping monitoring there is a difference. Instead of emitting
 every intermediate count on the current line, only the final
 line is printed. This helps keep test cases short and readable.
@@ -214,7 +214,7 @@ Bug reports and pull requests are welcome on GitHub at
 https://github.com/jgorman/wifi-watch.
 
 If you discover a shortcoming capture the ping output
-using --debug-to and open an issue. Thanks!
+using --ping-to and open an issue. Thanks!
 
 ## License
 
