@@ -16,7 +16,7 @@ for test_path in $ping_logs/*.log; do
   test_name=`basename $test_path .log`
 
   echo -n "Running $test_name ... "
-  $wifiwatch --debug-from $test_path >$results/$test_name.out
+  $wifiwatch --ping-from $test_path >$results/$test_name.out
   tests=$(expr $tests + 1)
 
   if cmp -s $expected/$test_name.out $results/$test_name.out; then
