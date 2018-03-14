@@ -183,7 +183,7 @@ class WifiWatch
         end
         sleep 0.2 # Be nice to the cpu.
       rescue
-        break	# Some systems throw an error at eof.
+        break	# Some systems throw an error at pipe eof.
       end
     end
     if last_notified > waiting_start
@@ -195,7 +195,7 @@ class WifiWatch
       begin
         line = stdin.gets
       rescue
-        break	# Some systems throw an error at eof.
+        break	# Some systems throw an error at pipe eof.
       end
       break unless line
 
