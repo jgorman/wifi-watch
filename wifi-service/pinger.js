@@ -11,14 +11,13 @@
  */
 
 const { spawn } = require("child_process");
-const { Readable } = require('stream');
+const { Readable } = require("stream");
 
 const Pinger = () => {
-
   const default_options = {
     host: "ns.google.com",
     count: 600,
-    logs:  6
+    logs: 6
   };
   let options = default_options;
   let ping_proc;
@@ -26,7 +25,7 @@ const Pinger = () => {
 
   const start = (opts = {}) => {
     if (!ping_proc) {
-      options = { ...default_options, ...opts};
+      options = { ...default_options, ...opts };
       run();
     }
   };
@@ -44,10 +43,10 @@ const Pinger = () => {
     let pushed = false;
 
     // Spawn a ping process.
-    ping_proc = spawn("ping", [ "-c", options.count, options.host ]);
+    ping_proc = spawn("ping", ["-c", options.count, options.host]);
 
     // Catch any errors and exit.
-    ping_proc.on("error", (err) => {
+    ping_proc.on("error", err => {
       console.error("spawn ping:", err.code, err.path, err.spawnargs);
       process.exit(2);
     });
@@ -61,11 +60,11 @@ const Pinger = () => {
     });
 
     // Capture each new ping line.
-    ping_proc.stdout.on("data", (data) => {
+    ping_proc.stdout.on("data", data => {
       now = Math.round(Date.now() / 1000);
       data_s = data.toString().trim();
       lines = data_s.split("\n");
-      lines.forEach( (line) => {
+      lines.forEach(line => {
         timed_line = `${now} ${line}\n`;
         ping_log.push(timed_line);
       });
@@ -79,7 +78,7 @@ const Pinger = () => {
         pushed = true;
       }
     });
-  }
+  };
 
   // Create a new ping log stream.
   const pings = () => {
@@ -97,7 +96,7 @@ const Pinger = () => {
 
         // If there are multiple lines, compact them.
         if (ping_log.length > 0) {
-          compacted = ping_log.join('');
+          compacted = ping_log.join("");
           ping_log.splice(0, ping_log.length, compacted);
         }
 
@@ -107,12 +106,12 @@ const Pinger = () => {
     });
 
     return reader;
-  }
+  };
 
   // Create a new ping summary stream.
   const summary = () => {
     const wifi_watch = spawn("wifi-watch", ["--ping-from=-"]);
-    wifi_watch.on("error", (err) => {
+    wifi_watch.on("error", err => {
       console.error("spawn wifi-watch:", err.code, err.path, err.spawnargs);
       process.exit(2);
     });
