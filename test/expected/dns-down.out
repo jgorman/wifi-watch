@@ -1,5 +1,5 @@
 09:47:38 ping: cannot resolve ns.google.com: Unknown host
-PING ns.google.com (216.239.32.10): 56 data bytes
+PING ns.google.com (216.239.32.10): 56 data bytes 2018-03-09 09:47:39 -0500
 
 Time  Ping  Run Mode Failed Round Trip
 ----- ---- ---- ---- ------ ----------

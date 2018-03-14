@@ -247,7 +247,7 @@ class WifiWatch
         # PING ns.google.com (216.239.32.10): 56 data bytes
         #
         unless @shown_header
-          put_line line # Show the destination name and ip.
+          put_line "#{line} #{line_time.strftime("%Y-%m-%d %H:%M:%S %z")}"
           put_line
           put_line "Time  Ping  Run Mode Failed Round Trip"
           put_line "----- ---- ---- ---- ------ ----------"
