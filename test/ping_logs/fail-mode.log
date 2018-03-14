@@ -12,7 +12,7 @@
 1520609469 
 1520609469 --- ns.google.com ping statistics ---
 1520609469 10 packets transmitted, 10 packets received, 0.0% packet loss
-1520609469 round-trip min/avg/max/stddev = 28.811/80.465/215.623/61.891 ms
+1520609469 round-trip min/avg/max/stddev = 28.811/80.470/215.623/61.891 ms
 END_OF_PING
 1520609469 PING ns.google.com (216.239.32.10): 56 data bytes
 1520609469 64 bytes from 216.239.32.10: icmp_seq=0 ttl=44 time=124.769 ms
