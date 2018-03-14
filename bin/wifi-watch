@@ -50,9 +50,6 @@ class WifiWatch
       until @ping_from.eof?
         ping_period(@ping_from) # Reads up to next "END_OF_PING" line.
       end
-      if @dns_failing
-        commit_line() # Show that we ended up in dns failure mode.
-      end
 
     else
 
@@ -75,8 +72,8 @@ class WifiWatch
     end
 
   rescue Interrupt
-    commit_line()
   ensure
+    commit_line()
     if @ping_to
       @ping_to.close
     end
@@ -187,7 +184,7 @@ class WifiWatch
       end
     end
     if last_notified > waiting_start
-      commit_line()
+      commit_line() # Leave the last Waiting... line as history.
     end
 
     # Process each line of ping output.
@@ -235,7 +232,7 @@ class WifiWatch
         @dns_failing = true
       elsif @dns_failing
         # If DNS was previously failing, pop to a fresh line.
-        commit_line()
+        commit_line() # Leave the DNS failure line as history.
         @dns_failing = false
       end
 
@@ -250,10 +247,10 @@ class WifiWatch
         # PING ns.google.com (216.239.32.10): 56 data bytes
         #
         unless @shown_header
-          puts line # Show the destination name and ip.
-          puts
-          puts "Time  Ping  Run Mode Failed Round Trip"
-          puts "----- ---- ---- ---- ------ ----------"
+          put_line line # Show the destination name and ip.
+          put_line
+          put_line "Time  Ping  Run Mode Failed Round Trip"
+          put_line "----- ---- ---- ---- ------ ----------"
           @shown_header = true # Only show these once per wifi-watch.
         end
 
@@ -326,16 +323,13 @@ class WifiWatch
 
     # Final summary line.
     if packets_line =~ /(\d+) packets transmitted, (\d+) packets received/
-        total_count   = $1.to_i
-        totally_good  = $2.to_i
-        if round_trip_line =~ / (\S+) ms/
-          avg_ms = $1.split('/')[1].to_f  # Extract the average time.
-        end
-        show_stats(line_time, total_count, totally_good,
-                 'good', totally_good, avg_ms)
-    end
-
-    unless @dns_failing
+      total_count   = $1.to_i
+      totally_good  = $2.to_i
+      if round_trip_line =~ / (\S+) ms/
+        avg_ms = $1.split('/')[1].to_f  # Extract the average time.
+      end
+      show_stats(line_time, total_count, totally_good,
+                'good', totally_good, avg_ms)
       commit_line() # Leave this summary line as history.
     end
   end
@@ -393,6 +387,13 @@ class WifiWatch
     display_line(line)
   end
 
+  # Put out a fresh new line.
+  def put_line(line = nil)
+    commit_line()
+    puts line
+    STDOUT.flush
+  end
+
   # Rewrite the current display line or save it for final debugging result.
   def display_line(line)
     @display_line = line
@@ -400,6 +401,7 @@ class WifiWatch
       # Display this current line.
       STDOUT.write "\r"   # Move to the start of this line.
       STDOUT.write line   # Write over it.
+      STDOUT.flush
     end
   end
 
@@ -413,6 +415,7 @@ class WifiWatch
         # Normal mode advance to the next line leaving this line as history.
         puts
       end
+      STDOUT.flush
       @display_line = nil
     end
   end
