@@ -25,7 +25,7 @@ const Pinger = () => {
 
   const start = (opts = {}) => {
     if (!ping_proc) {
-      options = { ...default_options, ...opts };
+      options = Object.assign({}, default_options, opts);
       run();
     }
   };
@@ -61,11 +61,11 @@ const Pinger = () => {
 
     // Capture each new ping line.
     ping_proc.stdout.on("data", data => {
-      now = Math.round(Date.now() / 1000);
-      data_s = data.toString().trim();
-      lines = data_s.split("\n");
+      const now = Math.round(Date.now() / 1000);
+      const data_s = data.toString().trim();
+      const lines = data_s.split("\n");
       lines.forEach(line => {
-        timed_line = `${now} ${line}\n`;
+        const timed_line = `${now} ${line}\n`;
         ping_log.push(timed_line);
       });
 
@@ -85,9 +85,9 @@ const Pinger = () => {
     let next_log = 0;
 
     const reader = new Readable({
-      read(size) {
+      read() {
         // Get the next log.
-        ping_log = ping_logs[next_log];
+        const ping_log = ping_logs[next_log];
         if (ping_log == undefined) {
           this.push(null);
           return;
@@ -96,7 +96,7 @@ const Pinger = () => {
 
         // If there are multiple lines, compact them.
         if (ping_log.length > 0) {
-          compacted = ping_log.join("");
+          const compacted = ping_log.join("");
           ping_log.splice(0, ping_log.length, compacted);
         }
 
