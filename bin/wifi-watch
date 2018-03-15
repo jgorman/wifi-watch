@@ -9,7 +9,7 @@ class WifiWatch
   Default_host    = "ns.google.com" # Ping target host.
   Default_count   = 600             # Accounting period in seconds.
   Program         = "wifi-watch"
-  Version         = "1.0.2"
+  Version         = "1.0.3"
 
   def run
     @shown_header = false # Have we shown the column headers yet?
