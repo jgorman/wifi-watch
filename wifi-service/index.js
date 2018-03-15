@@ -15,12 +15,20 @@ server.on("request", (req, res) => {
   }
 });
 
-function getUrlParams(search) {
-  let hashes = search.slice(search.indexOf("?") + 1).split("&");
-  return hashes.reduce((params, hash) => {
+function getUrlParams(url) {
+  const idx = url.indexOf("?");
+  if (idx < 0) return {};
+  return getSearchParams(url.slice(idx + 1));
+}
+
+function getSearchParams(search) {
+  const hashes = search.slice(search.indexOf("?") + 1).split("&");
+  let params ={};
+  hashes.forEach( (hash) => {
     let [key, val] = hash.split("=");
-    return Object.assign(params, { [key]: decodeURIComponent(val) });
-  }, {});
+    if (key && val !== undefined) params[key] = decodeURIComponent(val);
+  });
+  return params;
 }
 
 server.listen(3000);
