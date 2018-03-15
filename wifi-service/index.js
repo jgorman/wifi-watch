@@ -1,29 +1,26 @@
 #!/usr/bin/env node
 
 const http = require("http");
-const Pinger = require("./pinger");
+const WifiRun = require("./wifi-run");
 
-const pinger = Pinger();
-pinger.start();
+const wifi_run = WifiRun();
+wifi_run.start();
 
 const server = http.createServer();
 server.on("request", (req, res) => {
-  const start_time = Date.now();
-  if (req.url === "/summary") {
-    pinger.summary().pipe(res);
-  } else if (req.url === "/pings") {
-    pinger.pings().pipe(res);
-  } else if (req.url === "/stop") {
-    pinger.stop();
-    res.end("Stopped\n");
-  } else if (req.url === "/start") {
-    pinger.start();
-    res.end("Started\n");
+  if (req.url.search(/^\/summary/) === 0) {
+    wifi_run.summary(getUrlParams(req.url)).pipe(res);
   } else {
     res.end("Okay\n");
   }
-  const end_time = Date.now();
-  console.log(`Ran ${req.url} in ${end_time - start_time} ms.`);
 });
+
+function getUrlParams(search) {
+  let hashes = search.slice(search.indexOf("?") + 1).split("&");
+  return hashes.reduce((params, hash) => {
+    let [key, val] = hash.split("=");
+    return Object.assign(params, { [key]: decodeURIComponent(val) });
+  }, {});
+}
 
 server.listen(3000);

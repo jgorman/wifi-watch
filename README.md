@@ -18,7 +18,7 @@ your network quality at this moment and how it has been
 holding up since you began recording hours or days ago.
 
 wifi-watch will run ping every second and refresh the
-current line with the current counts. At the end of
+status line with the current counts. At the end of
 an accounting period the current counts are saved
 as a history line and a new accounting period begins.
 
@@ -63,14 +63,14 @@ sudo mv wifi-watch /usr/local/bin
 -c, --count seconds     Accounting period length [600 seconds].
 -p, --periods periods   Accounting periods to run [infinite].
     --ping-to file      Write ping output to a file for debugging.
-    --ping-from file    Read ping input from a file ('-' for stdin).
+    --ping-from file    Ping input from a file ('-' for stdin).
 -v, --version           Version.
     --help              This message.
 ```
 
-### Current Period Status Counts
+### Status Line
 
-The current output line shows counts for the current period.
+The status line shows counts for the current period.
 
 ```
 Time  Ping  Run Mode Failed Round Trip
@@ -116,7 +116,7 @@ Time  Ping  Run Mode Failed Round Trip
 
 #### Ping success or failure run length.
 
-On the current bottom line the run length count resets to 1
+On the status line the run length count resets to 1
 on every transition between "good" and "fail" modes. This way
 we can tell at a glance how long we have been in the current
 state. In a still connected high packet loss environment
@@ -202,11 +202,11 @@ Time  Ping  Run Mode Failed Round Trip
 ```
 
 Although the --ping-from output should appear to be the same
-as live ping monitoring there is a difference. Instead of emitting
-every intermediate count on the current line, only the final
-line is printed. This helps keep test cases short and readable.
+as live ping monitoring there is a difference. Instead of showing
+every status line, only the final summary line is printed.
+This helps keep test cases short and readable.
 
-You can run the current test suite with rake test.
+You can run the test suite with rake test.
 
 ## Contributing
 
