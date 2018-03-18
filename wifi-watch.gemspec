@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/jgorman/wifi-watch"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files`.split
+  spec.files         = `git ls-files`.split.reject {|f| f =~ /^debugging/}
   spec.bindir        = "bin"
   spec.executables   = ["wifi-watch"]
   spec.require_paths = ["lib"]
