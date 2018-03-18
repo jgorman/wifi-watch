@@ -291,10 +291,12 @@ class WifiWatch
 
       elsif line =~ / packets transmitted, /
         # 5 packets transmitted, 5 packets received, 0.0% packet loss
+        # 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
         packets_line = line
 
       elsif line =~ /^(round-trip|rtt) /
         # round-trip min/avg/max/stddev = 0.063/0.082/0.122/0.022 ms
+        # rtt min/avg/max/mdev = 15.148/15.530/15.770/0.273 ms
         round_trip_line = line
       end
 
@@ -325,12 +327,14 @@ class WifiWatch
     if packets_line =~ /(\d+) packets transmitted, (\d+)/
       total_count   = $1.to_i
       totally_good  = $2.to_i
-      avg_ms        = 0
+      avg_ms        = ping_ms
       if round_trip_line =~ / (\S+) ms/
         avg_ms = $1.split('/')[1].to_f  # Extract the average time.
       end
       show_stats(line_time, total_count, totally_good,
                 'good', totally_good, avg_ms)
+    end
+    unless @dns_failing
       commit_status() # Leave this summary line as history.
     end
   end
