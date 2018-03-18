@@ -28,7 +28,12 @@ def run
     runs += 1
     STDOUT.write('.') if runs % 100 == 0
     while true
-      line = stdin.gets rescue nil
+      begin
+        # See debugging/ruby-spawn-gets-zombie.rb for OS X bug here.
+        line = stdin.gets
+      rescue
+        break # Some systems throw an error at pipe eof.
+      end
       break unless line
       lines += 1
     end
