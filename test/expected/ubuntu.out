@@ -1,0 +1,6 @@
+PING ns.google.com (216.239.32.10) 56(84) bytes of data. 2018-03-18 16:18:06 -0400
+
+Time  Ping  Run Mode Failed Round Trip
+----- ---- ---- ---- ------ ----------
+16:18    3    3 good   0.0%   15.32 ms
+16:18    3    3 good   0.0%   15.53 ms

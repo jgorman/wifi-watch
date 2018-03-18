@@ -1,0 +1,18 @@
+1521404286 PING ns.google.com (216.239.32.10) 56(84) bytes of data.
+1521404286 64 bytes from ns1.google.com (216.239.32.10): icmp_seq=1 ttl=47 time=15.6 ms
+1521404287 64 bytes from ns1.google.com (216.239.32.10): icmp_seq=2 ttl=47 time=15.1 ms
+1521404288 64 bytes from ns1.google.com (216.239.32.10): icmp_seq=3 ttl=47 time=15.1 ms
+1521404288 
+1521404288 --- ns.google.com ping statistics ---
+1521404288 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+1521404288 rtt min/avg/max/mdev = 15.131/15.315/15.658/0.242 ms
+END_OF_PING
+1521404288 PING ns.google.com (216.239.32.10) 56(84) bytes of data.
+1521404288 64 bytes from ns1.google.com (216.239.32.10): icmp_seq=1 ttl=47 time=15.1 ms
+1521404289 64 bytes from ns1.google.com (216.239.32.10): icmp_seq=2 ttl=47 time=15.6 ms
+1521404290 64 bytes from ns1.google.com (216.239.32.10): icmp_seq=3 ttl=47 time=15.7 ms
+1521404290 
+1521404290 --- ns.google.com ping statistics ---
+1521404290 3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+1521404290 rtt min/avg/max/mdev = 15.148/15.530/15.770/0.273 ms
+END_OF_PING

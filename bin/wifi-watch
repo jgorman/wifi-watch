@@ -240,7 +240,7 @@ class WifiWatch
       new_mode = nil
 
       # Parse the line.
-      if line =~ /PING/
+      if line =~ /^PING /
         #
         # The first ping output line shows the destination host and ip.
         #
@@ -254,8 +254,8 @@ class WifiWatch
           @shown_header = true # Only show these once per wifi-watch.
         end
 
-      elsif line =~ /bytes from/
-        if line =~ /time=(\S+)/
+      elsif line =~ / bytes from /
+        if line =~ / time=(\S+) ms/
           #
           # Success! Record the round trip time.
           #
@@ -285,15 +285,15 @@ class WifiWatch
           hhmmss_line(line_time, line)
         end
 
-      elsif line =~ /timeout/
+      elsif line =~ /^Request timeout for /
         # Request timeout for icmp_seq 3
         new_mode  = 'fail'
 
-      elsif line =~ /transmitted/
+      elsif line =~ / packets transmitted, /
         # 5 packets transmitted, 5 packets received, 0.0% packet loss
         packets_line = line
 
-      elsif line =~ /round-trip/
+      elsif line =~ /^(round-trip|rtt) /
         # round-trip min/avg/max/stddev = 0.063/0.082/0.122/0.022 ms
         round_trip_line = line
       end
@@ -322,7 +322,7 @@ class WifiWatch
     end
 
     # Final summary line.
-    if packets_line =~ /(\d+) packets transmitted, (\d+) packets received/
+    if packets_line =~ /(\d+) packets transmitted, (\d+)/
       total_count   = $1.to_i
       totally_good  = $2.to_i
       avg_ms        = 0
