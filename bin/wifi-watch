@@ -26,7 +26,7 @@ class WifiWatch
         puts
         puts "ping_to=#{@options.ping_to}: #{e}"
         puts
-        exit 1
+        exit 2
       end
     end
 
@@ -43,7 +43,7 @@ class WifiWatch
         puts
         puts "ping_from=#{@options.ping_from}: #{e}"
         puts
-        exit 1
+        exit 2
       end
 
       # Call ping_period() for each ping run section.
@@ -139,7 +139,7 @@ class WifiWatch
       puts
       puts opt_parser
       puts
-      exit 1
+      exit 2
     end
 
     return options
@@ -325,6 +325,7 @@ class WifiWatch
     if packets_line =~ /(\d+) packets transmitted, (\d+) packets received/
       total_count   = $1.to_i
       totally_good  = $2.to_i
+      avg_ms        = 0
       if round_trip_line =~ / (\S+) ms/
         avg_ms = $1.split('/')[1].to_f  # Extract the average time.
       end
