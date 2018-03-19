@@ -50,17 +50,17 @@ const WifiRun = () => {
   // Run wifi-watch.
   const run = () => {
     // Spawn a wifi-watch process and catch any errors.
-    wifi_proc = spawn("wifi-watch", ["-c", options.count, "-h", options.host]);
+    wifi_proc = spawn("../bin/wifi-watch", ["-c", options.count, "-h", options.host]);
     wifi_proc.on("error", err => {
       const reason = `${err.code} ${err.path} ${err.spawnargs}`;
-      history_lines.push(`wifi-watch spawn error: ${reason}`);
+      history_lines.push(`../bin/wifi-watch spawn error: ${reason}`);
       wifi_proc = undefined;
     });
 
     // Report on wifi-watch death.
     wifi_proc.on("close", (code, sig) => {
       const reason = code ? `exit: ${code}` : `signal: ${sig}`;
-      history_lines.push(`wifi-watch stopped: ${reason}`);
+      history_lines.push(`../bin/wifi-watch stopped: ${reason}`);
       wifi_proc = undefined;
     });
 
