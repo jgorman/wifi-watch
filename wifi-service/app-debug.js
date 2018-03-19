@@ -23,7 +23,7 @@ server.on("request", (req, res) => {
     res.end("Started\n");
 
   } else {
-    res.end("Okay\n");
+    res.end(`Okay ${req.url}\n`);
   }
 
   const end_time = Date.now();
