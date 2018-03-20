@@ -49,6 +49,7 @@ const WifiRun = () => {
 
   // Run wifi-watch.
   const run = () => {
+
     // Spawn a wifi-watch process and catch any errors.
     wifi_proc = spawn("../bin/wifi-watch", ["-c", options.count, "-h", options.host]);
     wifi_proc.on("error", err => {
@@ -73,8 +74,14 @@ const WifiRun = () => {
        * We keep the latest "\r" separated status line revision per line.
        */
       lines.forEach((line, index) => {
-        let latest = line.split("\r").pop();
 
+        // If a line doesn't begin with "\r" it commits the last status.
+        if (line.search(/^\r/) !== 0) {
+          commit_status();
+        }
+
+        // Split on "\r" and keep the latest revision.
+        let latest = line.split("\r").pop();
         if (latest.search(/^PING/) === 0) {
           return;
         }
@@ -89,18 +96,20 @@ const WifiRun = () => {
         if (latest === "") {
           return;
         }
-
         status_line = latest;
-        if (index < lines.length - 1) {
-          // This is a committed line. Make room for it.
-          while (history_lines.length >= options.lines) {
-            history_lines.shift();
-          }
-          history_lines.push(status_line);
-          status_line = undefined;
-        }
       });
     });
+  };
+
+  const commit_status = () => {
+    if (status_line) {
+      // This is a committed line. Make room for it.
+      while (history_lines.length >= options.lines) {
+        history_lines.shift();
+      }
+      history_lines.push(status_line);
+      status_line = undefined;
+    }
   };
 
   // Create a new summary stream.

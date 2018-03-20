@@ -3,7 +3,7 @@
 const http = require("http");
 const WifiRun = require("./wifi-run");
 
-let opts = { count: 10, lines: 10 };
+let opts = { count: 10, lines: 1000 };
 const wifi_run = WifiRun();
 wifi_run.start(opts);
 
