@@ -13,15 +13,12 @@ server.on("request", (req, res) => {
 
   if (req.url.search(/^\/summary/) === 0) {
     wifi_run.summary(getUrlParams(req.url)).pipe(res);
-
   } else if (req.url.search(/^\/stop/) === 0) {
     wifi_run.stop();
     res.end("Stopped\n");
-
   } else if (req.url.search(/^\/start/) === 0) {
     wifi_run.start(opts);
     res.end("Started\n");
-
   } else {
     res.end(`Okay ${req.url}\n`);
   }
@@ -38,8 +35,8 @@ function getUrlParams(url) {
 
 function getSearchParams(search) {
   const hashes = search.slice(search.indexOf("?") + 1).split("&");
-  let params ={};
-  hashes.forEach( (hash) => {
+  let params = {};
+  hashes.forEach(hash => {
     let [key, val] = hash.split("=");
     if (key && val !== undefined) params[key] = decodeURIComponent(val);
   });

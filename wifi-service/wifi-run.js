@@ -49,9 +49,13 @@ const WifiRun = () => {
 
   // Run wifi-watch.
   const run = () => {
-
     // Spawn a wifi-watch process and catch any errors.
-    wifi_proc = spawn("../bin/wifi-watch", ["-c", options.count, "-h", options.host]);
+    wifi_proc = spawn("../bin/wifi-watch", [
+      "-c",
+      options.count,
+      "-h",
+      options.host
+    ]);
     wifi_proc.on("error", err => {
       const reason = `${err.code} ${err.path} ${err.spawnargs}`;
       history_lines.push(`../bin/wifi-watch spawn error: ${reason}`);
@@ -73,8 +77,7 @@ const WifiRun = () => {
        * Each data chunk may contain multiple "\n" separated lines.
        * We keep the latest "\r" separated status line revision per line.
        */
-      lines.forEach((line, index) => {
-
+      lines.forEach(line => {
         // If a line doesn't begin with "\r" it commits the last status.
         if (line.search(/^\r/) !== 0) {
           commit_status();

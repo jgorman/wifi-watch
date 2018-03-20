@@ -24,8 +24,8 @@ function getUrlParams(url) {
 
 function getSearchParams(search) {
   const hashes = search.slice(search.indexOf("?") + 1).split("&");
-  let params ={};
-  hashes.forEach( (hash) => {
+  let params = {};
+  hashes.forEach(hash => {
     let [key, val] = hash.split("=");
     if (key && val !== undefined) params[key] = decodeURIComponent(val);
   });
