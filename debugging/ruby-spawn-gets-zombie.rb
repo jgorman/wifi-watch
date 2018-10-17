@@ -8,6 +8,7 @@ require 'pty'
 #
 # Typically one in 10,000 - 20,000 runs will show this problem.
 #
+# This appears to have been fixed with Ruby 2.5.1p57 on OS X 10.13.6.
 
 def run
 

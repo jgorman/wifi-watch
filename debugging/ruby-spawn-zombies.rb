@@ -4,6 +4,8 @@ require 'pty'
 
 # Looping through PTY spawn stdout leaves a trail of zombies.
 # Tested with Ruby 2.5.0p0 on OS X 10.13.3 and Ubuntu 16.4.
+#
+# This is likely expected behavior so that we can check the pid exit status.
 
 def run
 

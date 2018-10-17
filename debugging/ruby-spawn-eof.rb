@@ -5,6 +5,9 @@ require 'pty'
 # PTY spawn stdout throws Errno::EIO at EOF.
 # Reproduced with Ruby 2.5.0p0 on Ubuntu 16.4.
 # This does not happen on OS X 10.13.3.
+#
+# This is documented in ruby/ext/pty/pty.c:
+#  * rescue Errno::EIO # GNU/Linux raises EIO.
 
 def run
 
